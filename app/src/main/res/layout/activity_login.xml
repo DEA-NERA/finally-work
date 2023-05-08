@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ui.auth.LoginActivity">
+
+    <TextView
+        android:id="@+id/EmailTextView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="32dp"
+        android:layout_marginTop="32dp"
+        android:layout_marginEnd="32dp"
+        android:text="Електронна пошта"
+        android:textColor="@color/black"
+        android:textSize="16dp"
+        app:layout_constraintTop_toTopOf="parent"
+
+        />
+
+    <EditText
+        android:id="@+id/EmailEditText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="32dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="32dp"
+        android:background="@drawable/input_design"
+        android:inputType="textEmailAddress"
+        android:padding="16dp"
+        app:layout_constraintTop_toBottomOf="@id/EmailTextView" />
+
+    <TextView
+        android:id="@+id/PaswordTextView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="32dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="32dp"
+        android:text="Пароль"
+        android:textColor="@color/black"
+        android:textSize="16dp"
+        app:layout_constraintTop_toBottomOf="@id/EmailEditText"
+
+        />
+
+    <EditText
+        android:id="@+id/PaswordEditText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="32dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="32dp"
+        android:background="@drawable/input_design"
+        android:inputType="textPassword"
+        android:padding="16dp"
+        app:layout_constraintTop_toBottomOf="@id/PaswordTextView" />
+
+    <RadioGroup
+        android:id="@+id/radioButtonGroup"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        app:layout_constraintTop_toBottomOf="@id/PaswordEditText">
+
+        <RadioButton
+            android:id="@+id/radioButtonAdmin"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="32dp"
+            android:layout_marginEnd="32dp"
+            android:buttonTint="@color/main_green"
+            android:text="Адміністратор"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <RadioButton
+            android:id="@+id/radioButtonUser"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="32dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="32dp"
+            android:buttonTint="@color/main_green"
+            android:text="Користувач"
+            app:layout_constraintTop_toBottomOf="@id/radioButtonAdmin" />
+    </RadioGroup>
+
+    <Button
+        android:id="@+id/loginBtn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="18dp"
+        android:background="@drawable/button_green"
+        android:paddingStart="58dp"
+        android:paddingEnd="58dp"
+        android:text="Увійти"
+        android:textAllCaps="false"
+        android:textSize="16dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/radioButtonGroup" />
+
+    <TextView
+        android:id="@+id/Text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="40dp"
+        android:layout_marginEnd="220dp"
+        android:layout_marginBottom="23dp"
+        android:text="Ще не маєте акаунт?"
+        android:textColor="@color/black"
+        android:textSize="15dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+
+        />
+
+    <TextView
+        android:id="@+id/registrateBtn"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginStart="26dp"
+        android:gravity="center_vertical"
+        android:text="Зареєструватися"
+        android:textColor="@color/main_green"
+        android:textSize="15dp"
+        app:layout_constraintBottom_toBottomOf="@id/Text"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/Text"
+        app:layout_constraintTop_toTopOf="@id/Text" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
+
+
+

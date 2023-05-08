@@ -1,0 +1,10 @@
+<resources>
+    <string name="app_name">Psychological Help</string>
+    <string name="title_activity_home">HomeActivity</string>
+    <string name="title_home">Головна</string>
+    <string name="title_doctors">Лікарі</string>
+    <string name="title_enrollment">Записи</string>
+    <string name="title_calendar">Календар</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+</resources>
