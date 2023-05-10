@@ -12,8 +12,16 @@
         android:theme="@style/Theme.FinallyWork"
         tools:targetApi="31">
         <activity
+            android:name=".AdminAddDoctorActivity"
+            android:exported="false" />
+        <activity
             android:name=".ui.admin.AdminPanelActivity"
             android:exported="false" />
+        <activity
+            android:name=".AdminAddActivity"
+            android:exported="false"
+            android:label="@string/title_activity_admin_add"
+            android:theme="@style/Theme.FinallyWork.NoActionBar" />
         <activity
             android:name=".ui.home.HomeActivity"
             android:exported="false"
