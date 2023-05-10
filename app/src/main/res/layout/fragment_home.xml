@@ -13,6 +13,17 @@
         android:background="@drawable/selector_rectangle_border_green_radius_30"
         app:layout_constraintTop_toTopOf="parent">
 
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/DoctorAvatar"
+            android:layout_width="144dp"
+            android:layout_height="144dp"
+            android:layout_margin="16dp"
+            android:src="@drawable/photo_default"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:civ_border_color="@color/black"
+            app:civ_border_width="1dp"
+            />
         <TextView
             android:id="@+id/userNameTextView"
             android:layout_width="wrap_content"
@@ -22,7 +33,8 @@
             android:textColor="@color/black"
             android:textSize="18dp"
             app:layout_constraintEnd_toStartOf="@id/RemoveBtn"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="@id/titlesBarrier"/>
 
         <TextView
             android:id="@+id/userEmailTextView"
@@ -98,6 +110,16 @@
             app:layout_constraintTop_toTopOf="@id/userCityTextView"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/titlesBarrier" />
+        <TextView
+            android:id="@+id/NumPhoneTextView"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:textColor="@color/black"
+            android:textSize="18dp"
+            app:layout_constraintBottom_toBottomOf="@id/userNumberPhoneTextView"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/titlesBarrier" />
+
 
         <Button
             android:id="@+id/DellAccBtn"
