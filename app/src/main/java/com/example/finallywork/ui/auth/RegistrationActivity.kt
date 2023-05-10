@@ -65,6 +65,13 @@ class RegistrationActivity : AppCompatActivity() {
                             task.exception?.localizedMessage?.trimIndent(),
                             Toast.LENGTH_LONG
                         ).show()
+                        firebaseAuth.currentUser?.delete()?.addOnFailureListener { exception ->
+                            Toast.makeText(
+                                this@RegistrationActivity,
+                                exception.localizedMessage?.trimIndent(),
+                                Toast.LENGTH_LONG
+                            ).show()
+                        }
                     }
                 }
         }

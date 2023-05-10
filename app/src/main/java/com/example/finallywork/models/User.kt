@@ -11,6 +11,7 @@ data class User(
     val lastName: String,
     val firstName: String,
     val dateOfBirth: Date,
+    val role: Role? = Role.USER,
 //    private val city: City
 ) {
     companion object {
@@ -23,6 +24,7 @@ data class User(
         const val lastName = "lastName"
         const val firstName = "firstName"
         const val dateOfBirth = "dateOfBirth"
+        const val role = "role"
 
         fun getUser(authId: String, onSuccess: (User) -> Unit, onFailure: (String) -> Unit) {
             firebaseFirestore.collection(collection)
@@ -41,7 +43,12 @@ data class User(
                                 firstName = it.getString(
                                     firstName
                                 ).toString(),
-                                dateOfBirth = date
+                                dateOfBirth = date,
+                                role = Role.valueOf(
+                                    it.getString(
+                                        role
+                                    ).toString()
+                                )
                             )
                             onSuccess.invoke(user)
                         }
@@ -95,6 +102,7 @@ data class User(
             User.lastName to lastName,
             User.firstName to firstName,
             User.dateOfBirth to dateOfBirth,
+            User.role to role
         )
         firebaseFirestore.collection(collection)
             .add(user)
