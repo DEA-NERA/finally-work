@@ -8,5 +8,5 @@ class Doctor(
     val firstName: String,
     val dateOfBirth: Date,
     val dateStartWork: Date,
-
+    val rating: Double
     )

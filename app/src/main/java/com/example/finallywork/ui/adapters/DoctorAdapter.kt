@@ -1,14 +1,15 @@
 package com.example.finallywork.ui.adapters
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.example.finallywork.databinding.ItemDoctorBinding
 import com.example.finallywork.models.Doctor
 
-class DoctorAdapter(private val context: Context):
+class DoctorAdapter(private val context: Context) :
     RecyclerView.Adapter<DoctorAdapter.DoctorViewHolder>() {
-
     var DoctorList: List<Doctor>? = null
         set(value) {
             field = value
@@ -28,7 +29,7 @@ class DoctorAdapter(private val context: Context):
 
     override fun onBindViewHolder(holder: DoctorViewHolder, position: Int) {
         DoctorList?.let { list ->
-            holder.onBind(list[position], onItemClick, chosenDoctor)
+            holder.onBind(list[position], onItemClick)
         }
     }
 
@@ -36,17 +37,14 @@ class DoctorAdapter(private val context: Context):
 
     inner class DoctorViewHolder(private val binding: ItemDoctorBinding) :
         RecyclerView.ViewHolder(binding.root) {
+        @SuppressLint("SetTextI18n")
         fun onBind(
             item: Doctor,
             onItemClick: ((Doctor) -> Unit)?,
-            chosenDoctor: Doctor?
         ) {
-            binding.itemDoctorInfo.text =
-                context.getString(R.string.Doctor_name_address_formatter, item.name, item.address)
 
-            if (item == chosenDoctor) {
-                binding.itemDoctorIcon.setImageResource(R.drawable.ic_check)
-            }
+            binding.NameDoctor.text = item.lastName + item.firstName
+            binding.RatingDoctor.text = item.rating.toString()
 
             itemView.setOnClickListener {
                 onItemClick?.invoke(item)
