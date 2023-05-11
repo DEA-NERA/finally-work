@@ -59,6 +59,7 @@ class RegistrationActivity : AppCompatActivity() {
                     if (task.isSuccessful) {
                         val getStartedIntent = Intent(this, FillInfoActivity::class.java)
                         startActivity(getStartedIntent)
+                        finish()
                     } else {
                         Toast.makeText(
                             this@RegistrationActivity,
