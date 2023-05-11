@@ -41,21 +41,22 @@ class LoginActivity : AppCompatActivity() {
         firebaseAuth.signInWithEmailAndPassword(
             binding.EmailEditText.text.toString(),
             binding.PaswordEditText.text.toString()
-        )
-            .addOnSuccessListener {
-                firebaseAuth.currentUser?.let { user ->
-                    User.getUser(
-                        authId = user.uid,
-                        onSuccess = {
-                            handleUser(it)
-                        },
-                        onFailure = { exception ->
-                            Toast.makeText(this, exception, Toast.LENGTH_LONG).show()
-                        })
-                }
+        ).addOnSuccessListener {
+            firebaseAuth.currentUser?.let { user ->
+                User.getUser(
+                    authId = user.uid,
+                    onSuccess = {
+                        handleUser(it)
+                    },
+                    onFailure = { exception ->
+                        Toast.makeText(this, exception, Toast.LENGTH_LONG).show()
+                    })
             }
+        }
             .addOnFailureListener { exception ->
-                Toast.makeText(this, exception.localizedMessage, Toast.LENGTH_LONG).show()
+                exception.localizedMessage?.let {
+                    Toast.makeText(this, it, Toast.LENGTH_LONG).show()
+                }
             }
     }
 

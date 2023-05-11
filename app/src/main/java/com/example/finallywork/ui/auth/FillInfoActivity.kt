@@ -73,6 +73,7 @@ class FillInfoActivity : AppCompatActivity() {
             calendar.get(Calendar.MONTH),
             calendar.get(Calendar.DAY_OF_MONTH)
         )
+        datePickerDialog.datePicker.maxDate = calendar.timeInMillis
 
         datePickerDialog.datePicker.init(
             calendar.get(Calendar.YEAR),

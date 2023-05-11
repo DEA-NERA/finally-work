@@ -1,10 +1,10 @@
 package com.example.finallywork
 
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Handler
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import com.example.finallywork.models.Role
 import com.example.finallywork.models.User
 import com.example.finallywork.ui.admin.AdminPanelActivity
@@ -19,8 +19,7 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         Handler().postDelayed({
             handleUser()
-            finish()
-        }, 3000)
+        }, 1000)
         setContentView(R.layout.activity_main)
     }
 
@@ -43,12 +42,12 @@ class MainActivity : AppCompatActivity() {
             Role.ADMIN -> openAdminPanel()
             else -> openHome()
         }
+        finish()
     }
 
     private fun openAdminPanel() {
         val adminIntent = Intent(this, AdminPanelActivity::class.java)
         startActivity(adminIntent)
-        finish()
     }
 
     private fun openHome() {

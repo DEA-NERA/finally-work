@@ -1,10 +1,11 @@
 package com.example.finallywork.models
 
+import android.util.Log
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
-import java.util.*
+import java.util.Date
 
 data class User(
     val authId: String,
@@ -31,28 +32,32 @@ data class User(
                 .whereEqualTo(User.authId, authId)
                 .get()
                 .addOnSuccessListener { documents ->
-                    documents.map {
-                        val dateOfBirth = it.getDate(
-                            dateOfBirth
-                        )
-
-                        dateOfBirth?.let { date ->
-                            val user = User(
-                                authId,
-                                lastName = it.getString(lastName).toString(),
-                                firstName = it.getString(
-                                    firstName
-                                ).toString(),
-                                dateOfBirth = date,
-                                role = Role.valueOf(
-                                    it.getString(
-                                        role
-                                    ).toString()
-                                )
+                    if (documents.isEmpty) {
+                        onFailure.invoke("User not found")
+                    } else {
+                        documents.map {
+                            Log.d("TAG", it.toString())
+                            val dateOfBirth = it.getDate(
+                                dateOfBirth
                             )
-                            onSuccess.invoke(user)
-                        }
+                            dateOfBirth?.let { date ->
+                                val user = User(
+                                    authId,
+                                    lastName = it.getString(lastName).toString(),
+                                    firstName = it.getString(
+                                        firstName
+                                    ).toString(),
+                                    dateOfBirth = date,
+                                    role = Role.valueOf(
+                                        it.getString(
+                                            role
+                                        ).toString()
+                                    )
+                                )
+                                onSuccess.invoke(user)
+                            }
 
+                        }
                     }
                 }
                 .addOnFailureListener { exception ->
@@ -112,7 +117,5 @@ data class User(
             .addOnFailureListener { exception ->
                 exception.localizedMessage?.let { onFailure.invoke(it) }
             }
-
-
     }
 }
