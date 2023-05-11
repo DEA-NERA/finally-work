@@ -7,6 +7,7 @@
     tools:context=".ui.admin.AdminPanelActivity">
 
     <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/adminDoctorsList"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_marginTop="16dp"
@@ -31,12 +32,12 @@
         android:id="@+id/AddBtn"
         android:layout_width="60dp"
         android:layout_height="60dp"
+        android:layout_marginBottom="8dp"
+        android:background="@drawable/plus_button"
         android:text="+"
         android:textSize="21sp"
-        android:background="@drawable/plus_button"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        android:layout_marginBottom="8dp"/>
+        app:layout_constraintStart_toStartOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

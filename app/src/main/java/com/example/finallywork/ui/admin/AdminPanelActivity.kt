@@ -2,13 +2,19 @@ package com.example.finallywork.ui.admin
 
 import android.content.Intent
 import android.os.Bundle
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.widget.addTextChangedListener
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.finallywork.databinding.ActivityAdminPanelBinding
+import com.example.finallywork.models.Doctor
+import com.example.finallywork.ui.adapters.DoctorAdapter
 
 class AdminPanelActivity : AppCompatActivity() {
 
 
     private lateinit var binding: ActivityAdminPanelBinding
+    private val doctorAdapter: DoctorAdapter by lazy { DoctorAdapter(this) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -20,5 +26,44 @@ class AdminPanelActivity : AppCompatActivity() {
             val adminIntent = Intent(this, AdminAddDoctorActivity::class.java)
             startActivity(adminIntent)
         }
+
+
+        binding.adminDoctorsList.apply {
+            layoutManager =
+                LinearLayoutManager(this@AdminPanelActivity, LinearLayoutManager.VERTICAL, false)
+            adapter = doctorAdapter
+        }
+
+        binding.SearchAdminEditText.addTextChangedListener {
+            if (binding.SearchAdminEditText.text.isBlank()) {
+                getAllDoctors()
+            } else {
+                Doctor.getByName(
+                    value = binding.SearchAdminEditText.text.toString(),
+                    onSuccess = {
+                        doctorAdapter.doctorList = it
+                    }, onFailure = { exception ->
+                        exception.let {
+                            Toast.makeText(this, it, Toast.LENGTH_LONG).show()
+                        }
+                    })
+            }
+        }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        getAllDoctors()
+    }
+
+    private fun getAllDoctors() {
+        Doctor.getAll(
+            onSuccess = {
+                doctorAdapter.doctorList = it
+            }, onFailure = { exception ->
+                exception.let {
+                    Toast.makeText(this, it, Toast.LENGTH_LONG).show()
+                }
+            })
     }
 }

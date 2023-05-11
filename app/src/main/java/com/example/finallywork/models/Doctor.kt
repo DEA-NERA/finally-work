@@ -1,5 +1,6 @@
 package com.example.finallywork.models
 
+import com.google.firebase.firestore.Filter
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
@@ -28,6 +29,79 @@ class Doctor(
         const val specializations = "specializations"
         const val rating = "rating"
         const val appointments = "appointments"
+
+        fun getAll(onSuccess: (ArrayList<Doctor>) -> Unit, onFailure: (String) -> Unit) {
+            firebaseFirestore.collection(collection)
+                .get()
+                .addOnSuccessListener { documents ->
+                    val result = ArrayList<Doctor>()
+                    documents.map {
+                        val dateOfBirth = it.getDate(dateOfBirth)
+                        val dateStartWork = it.getDate(dateStartWork)
+                        dateOfBirth?.let { dateBirth ->
+                            dateStartWork?.let { dateStart ->
+                                val doctor = Doctor(
+                                    id = it.getString(id).toString(),
+                                    lastName = it.getString(lastName).toString(),
+                                    firstName = it.getString(firstName).toString(),
+                                    dateOfBirth = dateBirth,
+                                    dateStartWork = dateStart,
+                                    specializations = it.get(specializations) as ArrayList<String>,
+                                    rating = it.getDouble(rating) ?: 5.0,
+                                    appointments = it.get(appointments) as ArrayList<Appointment>
+                                )
+                                result.add(doctor)
+                            }
+                        }
+                    }
+                    onSuccess.invoke(result)
+
+                }
+                .addOnFailureListener { exception ->
+                    exception.localizedMessage?.let { onFailure.invoke(it) }
+                }
+        }
+
+        fun getByName(
+            value: String,
+            onSuccess: (ArrayList<Doctor>) -> Unit,
+            onFailure: (String) -> Unit
+        ) {
+            firebaseFirestore.collection(collection)
+                .where(
+                    Filter.or(
+                    Filter.equalTo(lastName, value),
+                    Filter.equalTo(firstName, value)
+                ))
+                .get()
+                .addOnSuccessListener { documents ->
+                    val result = ArrayList<Doctor>()
+                    documents.map {
+                        val dateOfBirth = it.getDate(dateOfBirth)
+                        val dateStartWork = it.getDate(dateStartWork)
+                        dateOfBirth?.let { dateBirth ->
+                            dateStartWork?.let { dateStart ->
+                                val doctor = Doctor(
+                                    id = it.getString(id).toString(),
+                                    lastName = it.getString(lastName).toString(),
+                                    firstName = it.getString(firstName).toString(),
+                                    dateOfBirth = dateBirth,
+                                    dateStartWork = dateStart,
+                                    specializations = it.get(specializations) as ArrayList<String>,
+                                    rating = it.getDouble(rating) ?: 5.0,
+                                    appointments = it.get(appointments) as ArrayList<Appointment>
+                                )
+                                result.add(doctor)
+                            }
+                        }
+                    }
+                    onSuccess.invoke(result)
+
+                }
+                .addOnFailureListener { exception ->
+                    exception.localizedMessage?.let { onFailure.invoke(it) }
+                }
+        }
     }
 
     fun addToDataBase(onSuccess: () -> Unit, onFailure: (String) -> Unit) {

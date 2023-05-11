@@ -39,9 +39,9 @@ class HomeFragment : Fragment() {
                 authId = it.uid,
                 onSuccess = { user ->
                     binding.userNameTextView.text = user.lastName + " " + user.firstName
-                    binding.userNameTextView.paintFlags = Paint.UNDERLINE_TEXT_FLAG
+                    binding.userDateBirthTextView.paintFlags = Paint.UNDERLINE_TEXT_FLAG
                     binding.DataBirthTextView.text = formattedDate
-                    binding.DataBirthTextView.paintFlags = Paint.UNDERLINE_TEXT_FLAG
+                    binding.userCityTextView.paintFlags = Paint.UNDERLINE_TEXT_FLAG
                     binding.userNumberPhoneTextView.paintFlags = Paint.UNDERLINE_TEXT_FLAG
 
                 },
