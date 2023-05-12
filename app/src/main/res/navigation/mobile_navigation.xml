@@ -22,7 +22,7 @@
         tools:layout="@layout/fragment_doctors" >
         <action
             android:id="@+id/action_navigation_doctor_to_navigation_calendar"
-            app:destination="@id/navigation_calendar" />
+            app:destination="@id/navigation_info" />
     </fragment>
 
     <fragment
@@ -31,12 +31,12 @@
         android:label="@string/title_enrollment"
         tools:layout="@layout/fragment_home" />
     <fragment
-        android:id="@+id/navigation_calendar"
+        android:id="@+id/navigation_info"
         android:name="com.example.finallywork.ui.home.HomeFragment"
-        android:label="@string/title_calendar"
-        tools:layout="@layout/fragment_home" >
+        android:label="@string/title_inf"
+        tools:layout="@layout/fragment_info" >
         <action
-            android:id="@+id/action_navigation_calendar_to_navigation_enrollment"
+            android:id="@+id/action_navigation_info_to_navigation_enrollment"
             app:destination="@id/navigation_enrollment" />
     </fragment>
 </navigation>

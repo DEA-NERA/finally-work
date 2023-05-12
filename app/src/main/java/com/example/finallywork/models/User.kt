@@ -32,9 +32,6 @@ data class User(
                 .whereEqualTo(User.authId, authId)
                 .get()
                 .addOnSuccessListener { documents ->
-                    if (documents.isEmpty) {
-                        onFailure.invoke("User not found")
-                    } else {
                         documents.map {
                             Log.d("TAG", it.toString())
                             val dateOfBirth = it.getDate(
@@ -56,8 +53,6 @@ data class User(
                                 )
                                 onSuccess.invoke(user)
                             }
-
-                        }
                     }
                 }
                 .addOnFailureListener { exception ->

@@ -16,8 +16,8 @@
         android:icon="@drawable/appointments"
         android:title="@string/title_enrollment" />
     <item
-        android:id="@+id/navigation_calendar"
-        android:icon="@drawable/calendar"
-        android:title="@string/title_calendar" />
+        android:id="@+id/navigation_inf"
+        android:icon="@drawable/ic_info"
+        android:title="@string/title_inf" />
 
 </menu>
