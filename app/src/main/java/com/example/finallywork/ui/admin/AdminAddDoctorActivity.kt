@@ -2,6 +2,8 @@ package com.example.finallywork.ui.admin
 
 import android.app.DatePickerDialog
 import android.os.Bundle
+import android.view.View
+import android.widget.CheckBox
 import android.widget.EditText
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -20,18 +22,29 @@ import java.util.UUID
 class AdminAddDoctorActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityAdminAddDoctorBinding
+    private val listOfSpecializationsCheckBoxes = ArrayList<CheckBox>()
+    private lateinit var doctor: Doctor
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         binding = ActivityAdminAddDoctorBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        listOfSpecializationsCheckBoxes.add(binding.checkBox)
+        listOfSpecializationsCheckBoxes.add(binding.checkBox2)
+        listOfSpecializationsCheckBoxes.add(binding.checkBox3)
+        listOfSpecializationsCheckBoxes.add(binding.checkBox4)
+        listOfSpecializationsCheckBoxes.add(binding.checkBox5)
+
         intent?.let {
             val doctorId = intent.getStringExtra("doctor")
             doctorId?.let {
+                binding.AddDoctorButton.visibility = View.GONE
+                binding.EditDoctorButton.visibility = View.VISIBLE
                 Doctor.getById(
                     doctorId,
-                    onSuccess = { doctor ->
+                    onSuccess = { result ->
+                        doctor = result
                         binding.NameDoctorEditText.setText(doctor.firstName)
                         binding.SurNameDoctorEditText.setText(doctor.lastName)
                         binding.DBirthDoctorEditText.setText(
@@ -44,78 +57,41 @@ class AdminAddDoctorActivity : AppCompatActivity() {
                                 doctor.dateStartWork
                             )
                         )
+                        listOfSpecializationsCheckBoxes.map { checkBox ->
+                            doctor.specializations.map { specialization ->
+                                if (checkBox.text == specialization) {
+                                    checkBox.isChecked = true
+                                }
+                            }
+                        }
                     },
                     onFailure = { exception ->
                         Toast.makeText(this, exception, Toast.LENGTH_LONG).show()
                     })
+            } ?: {
+                binding.AddDoctorButton.visibility = View.VISIBLE
+                binding.EditDoctorButton.visibility = View.GONE
             }
         }
 
         binding.AddDoctorButton.setOnClickListener {
-            val dateOfBirth =
-                SimpleDateFormat(Doctor.DATE_FORMAT_PATTERN).parse(binding.DBirthDoctorEditText.text.toString())
-            val dateStartWork =
-                SimpleDateFormat(Doctor.DATE_FORMAT_PATTERN).parse(binding.DateStartWorkDoctorEditText.text.toString())
-            val specializations = ArrayList<String>()
-            if (binding.checkBox.isChecked) {
-                specializations.add(binding.checkBox.text.toString())
-            }
-            if (binding.checkBox2.isChecked) {
-                specializations.add(binding.checkBox2.text.toString())
-            }
-            if (binding.checkBox3.isChecked) {
-                specializations.add(binding.checkBox3.text.toString())
-            }
-            if (binding.checkBox4.isChecked) {
-                specializations.add(binding.checkBox4.text.toString())
-            }
-            if (binding.checkBox5.isChecked) {
-                specializations.add(binding.checkBox5.text.toString())
-            }
+            getDoctor()?.addToDataBase(
+                onSuccess = {
+                    finish()
+                },
+                onFailure = { exception ->
+                    Toast.makeText(this, exception, Toast.LENGTH_LONG).show()
+                })
+        }
 
-            val appointments = ArrayList<Appointment>()
-            val c = Calendar.getInstance()
-            for (i in 0..30) {
-                c.set(
-                    c.get(Calendar.YEAR),
-                    c.get(Calendar.MONTH),
-                    c.get(Calendar.DAY_OF_MONTH),
-                    8,
-                    0,
-                    0
-                )
-                if (c.get(Calendar.DAY_OF_WEEK) == Calendar.FRIDAY)
-                    c.add(Calendar.DATE, 3)
-                else if (c.get(Calendar.DAY_OF_WEEK) == Calendar.SATURDAY)
-                    c.add(Calendar.DATE, 2)
-                else
-                    c.add(Calendar.DATE, 1)
-                for (j in 0..4) {
-                    c.add(Calendar.HOUR, 1)
-                    val date = c.time
-                    appointments.add(Appointment(isAvailable = true, date = date))
-                }
-            }
-
-            dateOfBirth?.let { birthDate ->
-                dateStartWork?.let { startWorkDate ->
-                    val doctor = Doctor(
-                        id = UUID.randomUUID().toString(),
-                        lastName = binding.SurNameDoctorEditText.text.toString(),
-                        firstName = binding.NameDoctorEditText.text.toString(),
-                        dateOfBirth = birthDate,
-                        dateStartWork = startWorkDate,
-                        rating = 5.0,
-                        specializations = specializations,
-                        appointments = appointments
-                    )
-                    doctor.addToDataBase(onSuccess = {
-                        finish()
-                    }, onFailure = { exception ->
-                        Toast.makeText(this, exception, Toast.LENGTH_LONG).show()
-                    })
-                }
-            }
+        binding.EditDoctorButton.setOnClickListener {
+            getDoctor(false)?.edit(
+                onSuccess = {
+                    finish()
+                },
+                onFailure = { exception ->
+                    Toast.makeText(this, exception, Toast.LENGTH_LONG).show()
+                })
         }
 
         binding.DBirthDoctorEditText.setOnClickListener {
@@ -160,5 +136,59 @@ class AdminAddDoctorActivity : AppCompatActivity() {
             editText.setText(SimpleDateFormat(Doctor.DATE_FORMAT_PATTERN).format(calendar.time))
             datePickerDialog.hide()
         }
+    }
+
+    private fun getDoctor(isCreate: Boolean? = true): Doctor? {
+        val dateOfBirth =
+            SimpleDateFormat(Doctor.DATE_FORMAT_PATTERN).parse(binding.DBirthDoctorEditText.text.toString())
+        val dateStartWork =
+            SimpleDateFormat(Doctor.DATE_FORMAT_PATTERN).parse(binding.DateStartWorkDoctorEditText.text.toString())
+        val specializations = ArrayList<String>()
+
+        listOfSpecializationsCheckBoxes.map {
+            if (it.isChecked)
+                specializations.add(it.text.toString())
+        }
+
+        val appointments = ArrayList<Appointment>()
+        val c = Calendar.getInstance()
+        for (i in 0..30) {
+            c.set(
+                c.get(Calendar.YEAR),
+                c.get(Calendar.MONTH),
+                c.get(Calendar.DAY_OF_MONTH),
+                8,
+                0,
+                0
+            )
+            if (c.get(Calendar.DAY_OF_WEEK) == Calendar.FRIDAY)
+                c.add(Calendar.DATE, 3)
+            else if (c.get(Calendar.DAY_OF_WEEK) == Calendar.SATURDAY)
+                c.add(Calendar.DATE, 2)
+            else
+                c.add(Calendar.DATE, 1)
+            for (j in 0..4) {
+                c.add(Calendar.HOUR, 1)
+                val date = c.time
+                appointments.add(Appointment(isAvailable = true, date = date))
+            }
+        }
+        dateOfBirth?.let { birthDate ->
+            dateStartWork?.let { startWorkDate ->
+                var id = doctor.id
+                if (isCreate == true)
+                    id = UUID.randomUUID().toString()
+                return Doctor(
+                    id = id,
+                    lastName = binding.SurNameDoctorEditText.text.toString(),
+                    firstName = binding.NameDoctorEditText.text.toString(),
+                    dateOfBirth = birthDate,
+                    dateStartWork = startWorkDate,
+                    rating = 5.0,
+                    specializations = specializations,
+                    appointments = appointments
+                )
+            } ?: return null
+        } ?: return null
     }
 }

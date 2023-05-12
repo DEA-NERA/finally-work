@@ -68,7 +68,7 @@ class Doctor(
             onFailure: (String) -> Unit
         ) {
             firebaseFirestore.collection(collection)
-                .whereEqualTo(id, id)
+                .whereEqualTo(Doctor.id, id)
                 .get()
                 .addOnSuccessListener { task ->
                     task.documents.map {
@@ -142,7 +142,6 @@ class Doctor(
     }
 
     fun addToDataBase(onSuccess: () -> Unit, onFailure: (String) -> Unit) {
-
         val appointment = ArrayList<HashMap<String, Any>>()
         appointments.map {
             appointment.add(
@@ -171,8 +170,6 @@ class Doctor(
             .addOnFailureListener { exception ->
                 exception.localizedMessage?.let { onFailure.invoke(it) }
             }
-
-
     }
 
     fun delete(onSuccess: () -> Unit, onFailure: (String) -> Unit) {
@@ -196,6 +193,47 @@ class Doctor(
             .addOnFailureListener { exception ->
                 exception.localizedMessage?.let { onFailure.invoke(it) }
             }
+    }
 
+
+    fun edit(onSuccess: () -> Unit, onFailure: (String) -> Unit) {
+        val appointment = ArrayList<HashMap<String, Any>>()
+        appointments.map {
+            appointment.add(
+                hashMapOf(
+                    Appointment.isAvailable to it.isAvailable,
+                    Appointment.date to it.date
+                )
+            )
+        }
+        firebaseFirestore.collection(collection)
+            .whereEqualTo(Doctor.id, id)
+            .get()
+            .addOnSuccessListener { task ->
+                task.documents.map { document ->
+                    firebaseFirestore.collection(collection)
+                        .document(
+                            document.id
+                        ).update(
+                            hashMapOf<String, Any>(
+                                Doctor.lastName to lastName,
+                                Doctor.firstName to firstName,
+                                Doctor.dateOfBirth to dateOfBirth,
+                                Doctor.dateStartWork to dateStartWork,
+                                Doctor.specializations to specializations,
+                                Doctor.appointments to appointment
+                            )
+                        )
+                        .addOnSuccessListener {
+                            onSuccess.invoke()
+                        }
+                        .addOnFailureListener { exception ->
+                            exception.localizedMessage?.let { onFailure.invoke(it) }
+                        }
+                }
+            }
+            .addOnFailureListener { exception ->
+                exception.localizedMessage?.let { onFailure.invoke(it) }
+            }
     }
 }

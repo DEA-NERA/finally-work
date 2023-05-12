@@ -4,12 +4,14 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:animateLayoutChanges="true"
     tools:context=".ui.admin.AdminAddDoctorActivity"
     tools:ignore="ExtraText">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:paddingBottom="16dp">
 
         <Toolbar
             android:id="@+id/infoToolbar"
@@ -223,6 +225,21 @@
             android:paddingStart="58dp"
             android:paddingEnd="58dp"
             android:text="Додати"
+            android:textAllCaps="false"
+            android:textSize="16sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/checkBox5" />
+
+        <Button
+            android:id="@+id/EditDoctorButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:background="@drawable/button_green"
+            android:paddingStart="58dp"
+            android:paddingEnd="58dp"
+            android:text="Редагувати"
             android:textAllCaps="false"
             android:textSize="16sp"
             app:layout_constraintEnd_toEndOf="parent"
