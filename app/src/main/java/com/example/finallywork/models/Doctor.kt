@@ -62,6 +62,42 @@ class Doctor(
                 }
         }
 
+        fun getById(
+            id: String,
+            onSuccess: (Doctor) -> Unit,
+            onFailure: (String) -> Unit
+        ) {
+            firebaseFirestore.collection(collection)
+                .whereEqualTo(id, id)
+                .get()
+                .addOnSuccessListener { task ->
+                    task.documents.map {
+                        val dateOfBirth = it.getDate(dateOfBirth)
+                        val dateStartWork = it.getDate(dateStartWork)
+                        dateOfBirth?.let { dateBirth ->
+                            dateStartWork?.let { dateStart ->
+                                val doctor = Doctor(
+                                    id = it.getString(Companion.id).toString(),
+                                    lastName = it.getString(lastName).toString(),
+                                    firstName = it.getString(firstName).toString(),
+                                    dateOfBirth = dateBirth,
+                                    dateStartWork = dateStart,
+                                    specializations = it.get(specializations) as ArrayList<String>,
+                                    rating = it.getDouble(rating) ?: 5.0,
+                                    appointments = it.get(appointments) as ArrayList<Appointment>
+                                )
+                                onSuccess.invoke(doctor)
+                            }
+                        }
+                    }
+
+                }
+                .addOnFailureListener { exception ->
+                    exception.localizedMessage?.let { onFailure.invoke(it) }
+                }
+
+        }
+
         fun getByName(
             value: String,
             onSuccess: (ArrayList<Doctor>) -> Unit,
@@ -70,9 +106,10 @@ class Doctor(
             firebaseFirestore.collection(collection)
                 .where(
                     Filter.or(
-                    Filter.equalTo(lastName, value),
-                    Filter.equalTo(firstName, value)
-                ))
+                        Filter.equalTo(lastName, value),
+                        Filter.equalTo(firstName, value)
+                    )
+                )
                 .get()
                 .addOnSuccessListener { documents ->
                     val result = ArrayList<Doctor>()
@@ -135,6 +172,30 @@ class Doctor(
                 exception.localizedMessage?.let { onFailure.invoke(it) }
             }
 
+
+    }
+
+    fun delete(onSuccess: () -> Unit, onFailure: (String) -> Unit) {
+        firebaseFirestore.collection(collection)
+            .whereEqualTo(Doctor.id, id)
+            .get()
+            .addOnSuccessListener { task ->
+                task.documents.map { document ->
+                    firebaseFirestore.collection(collection)
+                        .document(
+                            document.id
+                        ).delete()
+                        .addOnSuccessListener {
+                            onSuccess.invoke()
+                        }
+                        .addOnFailureListener { exception ->
+                            exception.localizedMessage?.let { onFailure.invoke(it) }
+                        }
+                }
+            }
+            .addOnFailureListener { exception ->
+                exception.localizedMessage?.let { onFailure.invoke(it) }
+            }
 
     }
 }

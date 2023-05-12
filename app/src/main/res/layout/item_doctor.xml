@@ -1,9 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.cardview.widget.CardView
-    android:id="@+id/card"
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/card"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_margin="16dp"
@@ -55,67 +54,124 @@
             app:barrierDirection="bottom"
             app:constraint_referenced_ids="RatingDoctor,DoctorAvatar" />
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/SpecializationsList"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:layout_marginTop="16dp"
-            app:layout_constraintBottom_toTopOf="@id/button"
-            app:layout_constraintEnd_toStartOf="@id/AgeDoctor"
+        <LinearLayout
+            android:id="@+id/detailsContainer"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/headerBarrier" />
+            app:layout_constraintTop_toBottomOf="@id/headerBarrier">
 
-        <TextView
-            android:id="@+id/AgeDoctor"
-            android:layout_width="0dp"
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/SpecializationsList"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:layout_weight="0.75" />
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:layout_marginEnd="16dp"
+                android:layout_weight="0.15"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/AgeDoctor"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/black"
+                    android:textSize="16sp"
+                    tools:text="вік: 17" />
+
+                <TextView
+                    android:id="@+id/ExpirienceDoctor"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:textColor="@color/black"
+                    android:textSize="16sp"
+                    tools:text="стаж: 17" />
+
+                <TextView
+                    android:id="@+id/CityDoctor"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:textColor="@color/black"
+                    android:textSize="16sp" />
+            </LinearLayout>
+        </LinearLayout>
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/createAppointmentButton"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="16dp"
-            android:textColor="@color/black"
+            android:background="@drawable/button_white"
+            android:paddingHorizontal="32dp"
+            android:text="Записатися"
+            android:textAllCaps="false"
             android:textSize="16sp"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@id/SpecializationsList"
-            app:layout_constraintTop_toBottomOf="@id/DoctorAvatar" />
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/detailsContainer" />
 
-        <TextView
-            android:id="@+id/ExpirienceDoctor"
-            android:layout_width="0dp"
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/editDoctorButton"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="16dp"
-            android:textColor="@color/black"
+            android:background="@drawable/button_white"
+            android:paddingHorizontal="32dp"
+            android:text="Редагувати"
+            android:textAllCaps="false"
             android:textSize="16sp"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@id/SpecializationsList"
-            app:layout_constraintTop_toBottomOf="@id/AgeDoctor" />
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/detailsContainer" />
 
-        <TextView
-            android:id="@+id/CityDoctor"
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/deleteDoctorButton"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_margin="16dp"
-            android:textColor="@color/black"
+            android:layout_marginTop="16dp"
+            android:background="@drawable/button_red"
+            android:text="Видалити"
+            android:textAllCaps="false"
+            android:textColor="@color/white"
             android:textSize="16sp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@id/SpecializationsList"
-            app:layout_constraintTop_toBottomOf="@id/ExpirienceDoctor"
-
-            />
+            app:layout_constraintEnd_toEndOf="@id/editDoctorButton"
+            app:layout_constraintStart_toStartOf="@id/editDoctorButton"
+            app:layout_constraintTop_toBottomOf="@id/editDoctorButton" />
 
         <androidx.constraintlayout.widget.Group
             android:id="@+id/DetailsGroup"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:constraint_referenced_ids="SpecializationsList,AgeDoctor,ExpirienceDoctor,CityDoctor"
-            android:visibility="gone"/>
+            android:visibility="gone"
+            app:constraint_referenced_ids="detailsContainer,createAppointmentButton,editDoctorButton,deleteDoctorButton"
+            tools:visibility="visible" />
+
+        <androidx.constraintlayout.widget.Barrier
+            android:id="@+id/ButtonsBarrier"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            app:barrierDirection="bottom"
+            app:constraint_referenced_ids="createAppointmentButton,editDoctorButton,deleteDoctorButton" />
 
         <Button
             android:id="@+id/button"
             android:layout_width="50dp"
             android:layout_height="20dp"
+            android:layout_marginTop="8dp"
             android:layout_marginEnd="16dp"
             android:background="@drawable/chevron_down"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/CityDoctor" />
+            app:layout_constraintTop_toBottomOf="@id/ButtonsBarrier" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

@@ -9,7 +9,7 @@
         android:id="@+id/navigation_home"
         android:name="com.example.finallywork.ui.home.HomeFragment"
         android:label="@string/title_home"
-        tools:layout="@layout/fragment_home" >
+        tools:layout="@layout/fragment_home">
         <action
             android:id="@+id/action_navigation_home_to_navigation_doctor"
             app:destination="@id/navigation_doctors" />
@@ -19,7 +19,7 @@
         android:id="@+id/navigation_doctors"
         android:name="com.example.finallywork.ui.home.DoctorsFragment"
         android:label="@string/title_doctors"
-        tools:layout="@layout/fragment_doctors" >
+        tools:layout="@layout/fragment_doctors">
         <action
             android:id="@+id/action_navigation_doctor_to_navigation_calendar"
             app:destination="@id/navigation_info" />
@@ -32,9 +32,9 @@
         tools:layout="@layout/fragment_home" />
     <fragment
         android:id="@+id/navigation_info"
-        android:name="com.example.finallywork.ui.home.HomeFragment"
+        android:name="com.example.finallywork.ui.home.InfoFragment"
         android:label="@string/title_inf"
-        tools:layout="@layout/fragment_info" >
+        tools:layout="@layout/fragment_info">
         <action
             android:id="@+id/action_navigation_info_to_navigation_enrollment"
             app:destination="@id/navigation_enrollment" />

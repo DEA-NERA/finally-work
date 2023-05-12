@@ -13,13 +13,16 @@ import java.time.LocalDate
 import java.time.Period
 import java.time.ZoneId
 
-class DoctorAdapter(private val context: Context) :
+class DoctorAdapter(private val context: Context, private val isAdmin: Boolean) :
     RecyclerView.Adapter<DoctorAdapter.DoctorViewHolder>() {
     var doctorList: List<Doctor>? = null
         set(value) {
             field = value
             notifyDataSetChanged()
         }
+
+    var onDeleteClick: ((Doctor) -> Unit)? = null
+    var onEditClick: ((Doctor) -> Unit)? = null
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DoctorViewHolder {
         return DoctorViewHolder(
@@ -45,7 +48,6 @@ class DoctorAdapter(private val context: Context) :
         fun onBind(
             item: Doctor
         ) {
-
             binding.NameDoctor.text = item.lastName + " " + item.firstName
             binding.RatingDoctor.text = item.rating.toString()
             val age = Period.between(
@@ -75,10 +77,28 @@ class DoctorAdapter(private val context: Context) :
                 if (binding.DetailsGroup.visibility == View.GONE) {
                     binding.DetailsGroup.visibility = View.VISIBLE
                     binding.card.setCardBackgroundColor(context.getColor(R.color.light_green))
+                    if (isAdmin) {
+                        binding.editDoctorButton.visibility = View.VISIBLE
+                        binding.deleteDoctorButton.visibility = View.VISIBLE
+                        binding.createAppointmentButton.visibility = View.GONE
+                    } else {
+                        binding.createAppointmentButton.visibility = View.VISIBLE
+                        binding.editDoctorButton.visibility = View.GONE
+                        binding.deleteDoctorButton.visibility = View.GONE
+                    }
+                    binding.button.rotation = 180F
                 } else {
                     binding.DetailsGroup.visibility = View.GONE
                     binding.card.setCardBackgroundColor(context.getColor(R.color.white))
+                    binding.button.rotation = 0F
                 }
+            }
+
+            binding.deleteDoctorButton.setOnClickListener {
+                onDeleteClick?.invoke(item)
+            }
+            binding.editDoctorButton.setOnClickListener {
+                onEditClick?.invoke(item)
             }
         }
 

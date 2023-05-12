@@ -1,10 +1,11 @@
-package com.example.finallywork
+package com.example.finallywork.ui.home
 
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import com.example.finallywork.R
 
 class InfoFragment : Fragment() {
 

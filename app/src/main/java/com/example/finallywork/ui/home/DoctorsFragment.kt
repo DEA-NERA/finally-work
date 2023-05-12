@@ -17,10 +17,9 @@ class DoctorsFragment : Fragment() {
 
     private lateinit var binding: FragmentDoctorsBinding
 
-    private val doctorAdapter: DoctorAdapter by lazy { DoctorAdapter(requireContext()) }
+    private val doctorAdapter: DoctorAdapter by lazy { DoctorAdapter(requireContext(), false) }
 
     override fun onCreateView(
-
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?

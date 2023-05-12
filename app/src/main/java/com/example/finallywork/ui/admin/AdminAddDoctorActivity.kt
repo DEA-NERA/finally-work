@@ -26,6 +26,31 @@ class AdminAddDoctorActivity : AppCompatActivity() {
         binding = ActivityAdminAddDoctorBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        intent?.let {
+            val doctorId = intent.getStringExtra("doctor")
+            doctorId?.let {
+                Doctor.getById(
+                    doctorId,
+                    onSuccess = { doctor ->
+                        binding.NameDoctorEditText.setText(doctor.firstName)
+                        binding.SurNameDoctorEditText.setText(doctor.lastName)
+                        binding.DBirthDoctorEditText.setText(
+                            SimpleDateFormat(Doctor.DATE_FORMAT_PATTERN).format(
+                                doctor.dateOfBirth
+                            )
+                        )
+                        binding.DateStartWorkDoctorEditText.setText(
+                            SimpleDateFormat(Doctor.DATE_FORMAT_PATTERN).format(
+                                doctor.dateStartWork
+                            )
+                        )
+                    },
+                    onFailure = { exception ->
+                        Toast.makeText(this, exception, Toast.LENGTH_LONG).show()
+                    })
+            }
+        }
+
         binding.AddDoctorButton.setOnClickListener {
             val dateOfBirth =
                 SimpleDateFormat(Doctor.DATE_FORMAT_PATTERN).parse(binding.DBirthDoctorEditText.text.toString())
