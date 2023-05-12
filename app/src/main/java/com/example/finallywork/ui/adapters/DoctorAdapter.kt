@@ -21,6 +21,7 @@ class DoctorAdapter(private val context: Context, private val isAdmin: Boolean) 
             notifyDataSetChanged()
         }
 
+    var onAddAppointment: ((Doctor) -> Unit)? = null
     var onDeleteClick: ((Doctor) -> Unit)? = null
     var onEditClick: ((Doctor) -> Unit)? = null
 
@@ -99,6 +100,9 @@ class DoctorAdapter(private val context: Context, private val isAdmin: Boolean) 
             }
             binding.editDoctorButton.setOnClickListener {
                 onEditClick?.invoke(item)
+            }
+            binding.createAppointmentButton.setOnClickListener {
+                onAddAppointment?.invoke(item)
             }
         }
 

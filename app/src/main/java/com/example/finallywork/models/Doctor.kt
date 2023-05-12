@@ -20,6 +20,7 @@ class Doctor(
         val firebaseFirestore: FirebaseFirestore by lazy { Firebase.firestore }
 
         const val DATE_FORMAT_PATTERN = "yyyy-MM-dd"
+        const val TIME_FORMAT_PATTERN = "H:m"
         const val collection = "doctors"
         const val id = "id"
         const val lastName = "lastName"

@@ -6,13 +6,13 @@
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"
-        android:icon="@mipmap/ic_launcher"
+        android:icon="@mipmap/border"
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/Theme.FinallyWork"
         tools:targetApi="31">
         <activity
-            android:name=".InfoActivity"
+            android:name=".ui.appointment.CreateAppointmentActivity"
             android:exported="false" />
         <activity
             android:name=".ui.admin.AdminPanelActivity"
