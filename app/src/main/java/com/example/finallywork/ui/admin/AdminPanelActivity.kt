@@ -53,9 +53,9 @@ class AdminPanelActivity : AppCompatActivity() {
             dialog.show()
         }
         doctorAdapter.onEditClick = { doctor ->
-            val adminIntent = Intent(this, AdminAddDoctorActivity::class.java)
-            adminIntent.putExtra("doctor", doctor.id)
-            startActivity(adminIntent)
+            val intent = Intent(this, AdminAddDoctorActivity::class.java)
+            intent.putExtra("doctor", doctor.id)
+            startActivity(intent)
         }
 
         binding.adminDoctorsList.apply {

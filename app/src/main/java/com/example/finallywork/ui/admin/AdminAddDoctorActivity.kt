@@ -37,42 +37,50 @@ class AdminAddDoctorActivity : AppCompatActivity() {
         listOfSpecializationsCheckBoxes.add(binding.checkBox5)
 
         intent?.let {
-            val doctorId = intent.getStringExtra("doctor")
-            doctorId?.let {
-                binding.AddDoctorButton.visibility = View.GONE
-                binding.EditDoctorButton.visibility = View.VISIBLE
-                Doctor.getById(
-                    doctorId,
-                    onSuccess = { result ->
-                        doctor = result
-                        binding.NameDoctorEditText.setText(doctor.firstName)
-                        binding.SurNameDoctorEditText.setText(doctor.lastName)
-                        binding.RoomDoctorEditText.setText(doctor.roomNumber)
-                        binding.DBirthDoctorEditText.setText(
-                            SimpleDateFormat(Doctor.DATE_FORMAT_PATTERN).format(
-                                doctor.dateOfBirth
+            it.extras?.let { extras ->
+                val doctorId = extras.getString("doctor")
+                doctorId?.let {
+                    Doctor.getById(
+                        doctorId,
+                        onSuccess = { result ->
+                            binding.AddDoctorButton.visibility = View.GONE
+                            binding.EditDoctorButton.visibility = View.VISIBLE
+                            doctor = result
+                            binding.NameDoctorEditText.setText(doctor.firstName)
+                            binding.SurNameDoctorEditText.setText(doctor.lastName)
+                            binding.RoomDoctorEditText.setText(doctor.roomNumber)
+                            binding.DBirthDoctorEditText.setText(
+                                SimpleDateFormat(Doctor.DATE_FORMAT_PATTERN).format(
+                                    doctor.dateOfBirth
+                                )
                             )
-                        )
-                        binding.DateStartWorkDoctorEditText.setText(
-                            SimpleDateFormat(Doctor.DATE_FORMAT_PATTERN).format(
-                                doctor.dateStartWork
+                            binding.DateStartWorkDoctorEditText.setText(
+                                SimpleDateFormat(Doctor.DATE_FORMAT_PATTERN).format(
+                                    doctor.dateStartWork
+                                )
                             )
-                        )
-                        listOfSpecializationsCheckBoxes.map { checkBox ->
-                            doctor.specializations.map { specialization ->
-                                if (checkBox.text == specialization) {
-                                    checkBox.isChecked = true
+                            listOfSpecializationsCheckBoxes.map { checkBox ->
+                                doctor.specializations.map { specialization ->
+                                    if (checkBox.text == specialization) {
+                                        checkBox.isChecked = true
+                                    }
                                 }
                             }
-                        }
-                    },
-                    onFailure = { exception ->
-                        Toast.makeText(this, exception, Toast.LENGTH_LONG).show()
-                    })
+                        },
+                        onFailure = { exception ->
+                            Toast.makeText(this, exception, Toast.LENGTH_LONG).show()
+                        })
+                } ?: {
+                    binding.AddDoctorButton.visibility = View.VISIBLE
+                    binding.EditDoctorButton.visibility = View.GONE
+                }
             } ?: {
                 binding.AddDoctorButton.visibility = View.VISIBLE
                 binding.EditDoctorButton.visibility = View.GONE
             }
+        } ?: {
+            binding.AddDoctorButton.visibility = View.VISIBLE
+            binding.EditDoctorButton.visibility = View.GONE
         }
 
         binding.AddDoctorButton.setOnClickListener {
@@ -100,6 +108,10 @@ class AdminAddDoctorActivity : AppCompatActivity() {
         }
         binding.DateStartWorkDoctorEditText.setOnClickListener {
             openDatePicker(binding.DateStartWorkDoctorEditText)
+        }
+
+        binding.infoToolbar.setNavigationOnClickListener {
+            finish()
         }
     }
 
@@ -176,14 +188,14 @@ class AdminAddDoctorActivity : AppCompatActivity() {
         }
         dateOfBirth?.let { birthDate ->
             dateStartWork?.let { startWorkDate ->
-                var id = doctor.id
-                if (isCreate == true)
-                    id = UUID.randomUUID().toString()
+                var id = UUID.randomUUID().toString()
+                if (isCreate == false && doctor != null)
+                    id = doctor.id
                 return Doctor(
                     id = id,
                     lastName = binding.SurNameDoctorEditText.text.toString(),
                     firstName = binding.NameDoctorEditText.text.toString(),
-                    roomNumber=binding.RoomDoctorEditText.text.toString(),
+                    roomNumber = binding.RoomDoctorEditText.text.toString(),
                     dateOfBirth = birthDate,
                     dateStartWork = startWorkDate,
                     rating = 5.0,
