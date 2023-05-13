@@ -142,14 +142,12 @@
 
     <TextView
         android:id="@+id/textView"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textColor="@color/black"
         android:textSize="18sp"
         android:layout_margin="16dp"
         android:text="Клініка знаходиться у місті Хмельницький. За адресою Пр.Миру 43 "
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@id/Border"
         />
 

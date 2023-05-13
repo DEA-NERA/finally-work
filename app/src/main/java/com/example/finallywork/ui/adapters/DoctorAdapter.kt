@@ -25,6 +25,7 @@ class DoctorAdapter(private val context: Context, private val isAdmin: Boolean? 
     var onDeleteClick: ((Doctor) -> Unit)? = null
     var onEditClick: ((Doctor) -> Unit)? = null
 
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DoctorViewHolder {
         return DoctorViewHolder(
             ItemDoctorBinding.inflate(
@@ -74,6 +75,8 @@ class DoctorAdapter(private val context: Context, private val isAdmin: Boolean? 
             binding.SpecializationsList.layoutManager =
                 LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
             binding.SpecializationsList.adapter = adapter
+
+
 
             binding.button.setOnClickListener {
                 if (it.isPressed) {

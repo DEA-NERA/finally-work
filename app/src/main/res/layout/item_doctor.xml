@@ -21,7 +21,8 @@
             android:layout_margin="16dp"
             android:src="@drawable/photo_default"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+            />
 
         <TextView
             android:id="@+id/NameDoctor"

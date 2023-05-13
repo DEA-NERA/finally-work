@@ -1,6 +1,7 @@
 package com.example.finallywork.ui.admin
 
 import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.view.View
 import android.widget.Toast
@@ -8,11 +9,20 @@ import androidx.appcompat.app.AlertDialog.Builder
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.widget.addTextChangedListener
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.canhub.cropper.CropImageContract
 import com.example.finallywork.R
 import com.example.finallywork.databinding.ActivityAdminPanelBinding
 import com.example.finallywork.models.Doctor
+import com.example.finallywork.models.User
+import com.example.finallywork.models.User.Companion.firebaseAuth
 import com.example.finallywork.ui.adapters.DoctorAdapter
-
+import com.example.finallywork.ui.auth.LoginActivity
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.ktx.Firebase
+import com.google.firebase.storage.ktx.storageMetadata
+import com.google.firebase.storage.StorageReference
+import com.google.firebase.storage.ktx.storage
+import kotlinx.coroutines.tasks.await
 
 class AdminPanelActivity : AppCompatActivity() {
 
@@ -58,6 +68,17 @@ class AdminPanelActivity : AppCompatActivity() {
             startActivity(intent)
         }
 
+        binding.buttonExit.setOnClickListener {
+            firebaseAuth.currentUser?.let {
+                firebaseAuth.signOut()
+                val exitIntent = Intent(this, LoginActivity::class.java)
+                startActivity(exitIntent)
+                finish()
+            } ?: run {
+                Toast.makeText(this, "You are not logged in", Toast.LENGTH_LONG).show()
+            }
+        }
+
         binding.adminDoctorsList.apply {
             layoutManager =
                 LinearLayoutManager(this@AdminPanelActivity, LinearLayoutManager.VERTICAL, false)
@@ -101,4 +122,5 @@ class AdminPanelActivity : AppCompatActivity() {
                 }
             })
     }
+
 }

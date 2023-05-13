@@ -1,17 +1,33 @@
 package com.example.finallywork.ui.admin
 
 import android.app.DatePickerDialog
+import android.content.Intent
+import android.graphics.Bitmap
+import android.net.Uri
 import android.os.Bundle
+import android.provider.MediaStore
 import android.view.View
 import android.widget.CheckBox
 import android.widget.EditText
+import android.widget.ImageView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import com.canhub.cropper.CropImageContract
+import com.canhub.cropper.CropImageContractOptions
+import com.canhub.cropper.CropImageOptions
+import com.canhub.cropper.CropImageView
 import com.example.finallywork.R
 import com.example.finallywork.databinding.ActivityAdminAddDoctorBinding
+import com.example.finallywork.databinding.ActivityAdminPanelBinding
 import com.example.finallywork.models.Appointment
 import com.example.finallywork.models.Doctor
 import com.example.finallywork.models.User
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.ktx.Firebase
+import com.google.firebase.storage.StorageReference
+import com.google.firebase.storage.ktx.storage
+import com.google.firebase.storage.ktx.storageMetadata
+import java.io.IOException
 import java.text.SimpleDateFormat
 import java.time.LocalDate
 import java.time.ZoneId
@@ -24,6 +40,32 @@ class AdminAddDoctorActivity : AppCompatActivity() {
     private lateinit var binding: ActivityAdminAddDoctorBinding
     private val listOfSpecializationsCheckBoxes = ArrayList<CheckBox>()
     private lateinit var doctor: Doctor
+    private val REQUEST_IMAGE_GET = 1
+
+    private val storageReference: StorageReference by lazy { Firebase.storage.reference }
+    private val firebaseAuth: FirebaseAuth by lazy { FirebaseAuth.getInstance() }
+    private val cropImageLauncher = registerForActivityResult(CropImageContract()) { result ->
+        if (result.isSuccessful) {
+            val uriContent = result.uriContent
+            uriContent?.let {
+                val metadata = storageMetadata {
+                    contentType = "image/jpg"
+                }
+                val reference =
+                    storageReference.child("files/userImage/" + firebaseAuth.currentUser?.uid)
+                reference.putFile(
+                    Uri.parse(result.uriContent.toString()), metadata
+                )
+                    .addOnFailureListener {
+                        Toast.makeText(this, it.localizedMessage, Toast.LENGTH_LONG).show()
+                    }
+            }
+        } else {
+            Toast.makeText(this, result.error?.localizedMessage, Toast.LENGTH_LONG).show()
+        }
+    }
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -35,7 +77,11 @@ class AdminAddDoctorActivity : AppCompatActivity() {
         listOfSpecializationsCheckBoxes.add(binding.checkBox3)
         listOfSpecializationsCheckBoxes.add(binding.checkBox4)
         listOfSpecializationsCheckBoxes.add(binding.checkBox5)
+        binding.AvatarImageView.setOnClickListener {
+            val intent = Intent(Intent.ACTION_PICK,MediaStore.Images.Media.INTERNAL_CONTENT_URI)
 
+            startActivityForResult(intent, REQUEST_IMAGE_GET)
+        }
         intent?.let {
             it.extras?.let { extras ->
                 val doctorId = extras.getString("doctor")
@@ -83,6 +129,7 @@ class AdminAddDoctorActivity : AppCompatActivity() {
             binding.EditDoctorButton.visibility = View.GONE
         }
 
+
         binding.AddDoctorButton.setOnClickListener {
             getDoctor()?.addToDataBase(
                 onSuccess = {
@@ -112,6 +159,24 @@ class AdminAddDoctorActivity : AppCompatActivity() {
 
         binding.infoToolbar.setNavigationOnClickListener {
             finish()
+        }
+
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+
+        if (requestCode == REQUEST_IMAGE_GET && resultCode == RESULT_OK && data != null) {
+            try {
+
+                val imageUri: Uri? = data.data
+                binding.AvatarImageView.setImageURI(imageUri)
+                if (imageUri != null) {
+                    openCropActivity(imageUri)
+                }
+            } catch (e: IOException) {
+                e.printStackTrace()
+            }
         }
     }
 
@@ -205,4 +270,23 @@ class AdminAddDoctorActivity : AppCompatActivity() {
             } ?: return null
         } ?: return null
     }
+
+
+    private fun openCropActivity(uri: Uri) {
+        cropImageLauncher.launch(
+            CropImageContractOptions(
+                uri,
+                CropImageOptions(
+                    cropShape = CropImageView.CropShape.OVAL,
+                    aspectRatioX = 1,
+                    aspectRatioY = 1,
+                    fixAspectRatio = true,
+                    outputCompressFormat = Bitmap.CompressFormat.JPEG,
+                    outputCompressQuality = 20,
+                    progressBarColor = getColor(R.color.main_green),
+                )
+            )
+        )
+    }
+
 }
