@@ -29,7 +29,7 @@ class FillInfoActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         binding.infoToolbar.setNavigationOnClickListener {
-            onBackPressed()
+            finish()
         }
         binding.BDateEditText.setOnClickListener {
             openDatePicker()
