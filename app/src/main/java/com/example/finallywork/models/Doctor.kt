@@ -4,7 +4,6 @@ import android.util.Log
 import com.google.firebase.Timestamp
 import com.google.firebase.firestore.Filter
 import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.firestore.Query
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import java.util.Date
@@ -20,9 +19,6 @@ class Doctor(
     val specializations: ArrayList<String>,
     val appointments: ArrayList<Appointment>
 ) {
-
-
-
     companion object {
         val firebaseFirestore: FirebaseFirestore by lazy { Firebase.firestore }
 
@@ -39,7 +35,10 @@ class Doctor(
         const val rating = "rating"
         const val appointments = "appointments"
 
-        fun getAll(onSuccess: (ArrayList<Doctor>) -> Unit, onFailure: (String) -> Unit) {
+        fun getAll(
+            onSuccess: (ArrayList<Doctor>) -> Unit,
+            onFailure: (String) -> Unit
+        ) {
             firebaseFirestore.collection(collection)
                 .orderBy(lastName, Query.Direction.ASCENDING)
                 .orderBy(firstName, Query.Direction.ASCENDING)
