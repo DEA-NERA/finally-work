@@ -1,11 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
+   android:animateLayoutChanges="true"
     tools:context=".ui.appointment.CreateAppointmentActivity">
+
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?actionBarSize"
+        app:layout_constraintTop_toTopOf="parent"
+        app:navigationIcon="@drawable/ic_arrow_left_light" />
+
 
     <CalendarView
         android:id="@+id/calendar"
@@ -13,7 +21,8 @@
         android:layout_height="wrap_content"
         android:layout_margin="16dp"
         android:background="@color/light_green"
-        android:theme="@style/DatePicker" />
+        android:theme="@style/DatePicker"
+        app:layout_constraintTop_toBottomOf="@id/toolbar" />
 
 
     <androidx.recyclerview.widget.RecyclerView
@@ -22,7 +31,25 @@
         android:layout_height="wrap_content"
         android:layout_margin="16dp"
         app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
+        app:layout_constraintTop_toBottomOf="@id/calendar"
         app:spanCount="5"
         tools:listitem="@layout/item_time" />
 
-</LinearLayout>
+
+    <Button
+        android:id="@+id/createAppointmentButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_margin="16dp"
+        android:background="@drawable/button_green"
+        android:paddingStart="58dp"
+        android:paddingEnd="58dp"
+        android:text="Записатись"
+        android:textAllCaps="false"
+        android:textSize="16sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

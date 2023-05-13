@@ -6,7 +6,7 @@ import java.util.Date
  * Created by Vladyslava Buriakovska on 10.05.2023
  */
 data class Appointment(
-    val isAvailable: Boolean,
+    var isAvailable: Boolean,
     val date: Date,
 ) {
 
@@ -14,4 +14,5 @@ data class Appointment(
         const val isAvailable = "isAvailable"
         const val date = "date"
     }
+
 }

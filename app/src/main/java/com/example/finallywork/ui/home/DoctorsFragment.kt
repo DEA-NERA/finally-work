@@ -19,7 +19,7 @@ class DoctorsFragment : Fragment() {
 
     private lateinit var binding: FragmentDoctorsBinding
 
-    private val doctorAdapter: DoctorAdapter by lazy { DoctorAdapter(requireContext(), false) }
+    private lateinit var doctorAdapter: DoctorAdapter
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -30,7 +30,7 @@ class DoctorsFragment : Fragment() {
             inflater, container,
             false
         )
-
+        doctorAdapter = DoctorAdapter(requireContext())
         doctorAdapter.onAddAppointment = {
             val appointmentIntent = Intent(requireContext(), CreateAppointmentActivity::class.java)
             appointmentIntent.putExtra("doctor", it.id)
@@ -50,7 +50,8 @@ class DoctorsFragment : Fragment() {
                     value = binding.SearchAdminEditText.text.toString(),
                     onSuccess = {
                         doctorAdapter.doctorList = it
-                    }, onFailure = { exception ->
+                    },
+                    onFailure = { exception ->
                         exception.let {
                             Toast.makeText(requireContext(), it, Toast.LENGTH_LONG).show()
                         }
@@ -72,6 +73,11 @@ class DoctorsFragment : Fragment() {
         Doctor.getAll(
             onSuccess = {
                 doctorAdapter.doctorList = it
+                if (it.size == 0) {
+                    binding.doctorsIsEmpty.visibility = View.VISIBLE
+                } else {
+                    binding.doctorsIsEmpty.visibility = View.GONE
+                }
             }, onFailure = { exception ->
                 exception.let {
                     Toast.makeText(requireContext(), it, Toast.LENGTH_LONG).show()

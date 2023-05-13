@@ -1,5 +1,6 @@
 package com.example.finallywork.models
 
+import com.google.firebase.Timestamp
 import com.google.firebase.firestore.Filter
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ktx.firestore
@@ -20,7 +21,7 @@ class Doctor(
         val firebaseFirestore: FirebaseFirestore by lazy { Firebase.firestore }
 
         const val DATE_FORMAT_PATTERN = "yyyy-MM-dd"
-        const val TIME_FORMAT_PATTERN = "H:m"
+        const val TIME_FORMAT_PATTERN = "H:mm"
         const val collection = "doctors"
         const val id = "id"
         const val lastName = "lastName"
@@ -75,6 +76,16 @@ class Doctor(
                     task.documents.map {
                         val dateOfBirth = it.getDate(dateOfBirth)
                         val dateStartWork = it.getDate(dateStartWork)
+                        val appointments = it.get(appointments) as ArrayList<HashMap<String, Any>>
+                        val resultAppointments = ArrayList<Appointment>()
+                        appointments.map { appointment ->
+                            resultAppointments.add(
+                                Appointment(
+                                    appointment[Appointment.isAvailable] as Boolean,
+                                    (appointment[Appointment.date] as Timestamp).toDate()
+                                )
+                            )
+                        }
                         dateOfBirth?.let { dateBirth ->
                             dateStartWork?.let { dateStart ->
                                 val doctor = Doctor(
@@ -85,7 +96,7 @@ class Doctor(
                                     dateStartWork = dateStart,
                                     specializations = it.get(specializations) as ArrayList<String>,
                                     rating = it.getDouble(rating) ?: 5.0,
-                                    appointments = it.get(appointments) as ArrayList<Appointment>
+                                    appointments = resultAppointments
                                 )
                                 onSuccess.invoke(doctor)
                             }

@@ -148,11 +148,19 @@
             app:layout_constraintTop_toBottomOf="@id/editDoctorButton" />
 
         <androidx.constraintlayout.widget.Group
+            android:id="@+id/AdminButtonsGroup"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            app:constraint_referenced_ids="editDoctorButton,deleteDoctorButton"
+            tools:visibility="visible" />
+
+        <androidx.constraintlayout.widget.Group
             android:id="@+id/DetailsGroup"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:visibility="gone"
-            app:constraint_referenced_ids="detailsContainer,createAppointmentButton,editDoctorButton,deleteDoctorButton"
+            app:constraint_referenced_ids="detailsContainer,AdminButtonsGroup,createAppointmentButton"
             tools:visibility="visible" />
 
         <androidx.constraintlayout.widget.Barrier

@@ -2,6 +2,7 @@ package com.example.finallywork.ui.admin
 
 import android.content.Intent
 import android.os.Bundle
+import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog.Builder
 import androidx.appcompat.app.AppCompatActivity
@@ -89,6 +90,11 @@ class AdminPanelActivity : AppCompatActivity() {
         Doctor.getAll(
             onSuccess = {
                 doctorAdapter.doctorList = it
+                if (it.size == 0) {
+                    binding.doctorsIsEmpty.visibility = View.VISIBLE
+                } else {
+                    binding.doctorsIsEmpty.visibility = View.GONE
+                }
             }, onFailure = { exception ->
                 exception.let {
                     Toast.makeText(this, it, Toast.LENGTH_LONG).show()

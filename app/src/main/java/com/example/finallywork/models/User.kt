@@ -1,6 +1,5 @@
 package com.example.finallywork.models
 
-import android.util.Log
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ktx.firestore
@@ -33,7 +32,6 @@ data class User(
                 .get()
                 .addOnSuccessListener { documents ->
                         documents.map {
-                            Log.d("TAG", it.toString())
                             val dateOfBirth = it.getDate(
                                 dateOfBirth
                             )
@@ -84,7 +82,7 @@ data class User(
             }
         }
 
-        fun deleteFromAuth(onSuccess: () -> Unit, onFailure: (String) -> Unit) {
+        private fun deleteFromAuth(onSuccess: () -> Unit, onFailure: (String) -> Unit) {
             firebaseAuth.currentUser?.let {
                 it.delete()
                     .addOnSuccessListener {

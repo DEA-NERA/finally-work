@@ -27,7 +27,7 @@
 
     <fragment
         android:id="@+id/navigation_enrollment"
-        android:name="com.example.finallywork.ui.home.HomeFragment"
+        android:name="com.example.finallywork.ui.home.MyAppointmentsFragment"
         android:label="@string/title_enrollment"
         tools:layout="@layout/fragment_home" />
     <fragment

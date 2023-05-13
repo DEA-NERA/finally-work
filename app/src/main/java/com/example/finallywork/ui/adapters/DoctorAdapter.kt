@@ -13,7 +13,7 @@ import java.time.LocalDate
 import java.time.Period
 import java.time.ZoneId
 
-class DoctorAdapter(private val context: Context, private val isAdmin: Boolean) :
+class DoctorAdapter(private val context: Context, private val isAdmin: Boolean? = false) :
     RecyclerView.Adapter<DoctorAdapter.DoctorViewHolder>() {
     var doctorList: List<Doctor>? = null
         set(value) {
@@ -49,6 +49,7 @@ class DoctorAdapter(private val context: Context, private val isAdmin: Boolean) 
         fun onBind(
             item: Doctor
         ) {
+            makeDetailsUnVisible()
             binding.NameDoctor.text = item.lastName + " " + item.firstName
             binding.RatingDoctor.text = item.rating.toString()
             val age = Period.between(
@@ -75,23 +76,12 @@ class DoctorAdapter(private val context: Context, private val isAdmin: Boolean) 
             binding.SpecializationsList.adapter = adapter
 
             binding.button.setOnClickListener {
-                if (binding.DetailsGroup.visibility == View.GONE) {
-                    binding.DetailsGroup.visibility = View.VISIBLE
-                    binding.card.setCardBackgroundColor(context.getColor(R.color.light_green))
-                    if (isAdmin) {
-                        binding.editDoctorButton.visibility = View.VISIBLE
-                        binding.deleteDoctorButton.visibility = View.VISIBLE
-                        binding.createAppointmentButton.visibility = View.GONE
+                if (it.isPressed) {
+                    if (binding.DetailsGroup.visibility == View.GONE) {
+                        makeDetailsVisible()
                     } else {
-                        binding.createAppointmentButton.visibility = View.VISIBLE
-                        binding.editDoctorButton.visibility = View.GONE
-                        binding.deleteDoctorButton.visibility = View.GONE
+                        makeDetailsUnVisible()
                     }
-                    binding.button.rotation = 180F
-                } else {
-                    binding.DetailsGroup.visibility = View.GONE
-                    binding.card.setCardBackgroundColor(context.getColor(R.color.white))
-                    binding.button.rotation = 0F
                 }
             }
 
@@ -106,5 +96,27 @@ class DoctorAdapter(private val context: Context, private val isAdmin: Boolean) 
             }
         }
 
+        private fun checkAdmin() {
+            if (isAdmin == true) {
+                binding.AdminButtonsGroup.visibility = View.VISIBLE
+                binding.createAppointmentButton.visibility = View.GONE
+            } else {
+                binding.createAppointmentButton.visibility = View.VISIBLE
+                binding.AdminButtonsGroup.visibility = View.GONE
+            }
+        }
+
+        private fun makeDetailsVisible() {
+            binding.DetailsGroup.visibility = View.VISIBLE
+            binding.card.setCardBackgroundColor(context.getColor(R.color.light_green))
+            binding.button.rotation = 180F
+            checkAdmin()
+        }
+
+        private fun makeDetailsUnVisible() {
+            binding.DetailsGroup.visibility = View.GONE
+            binding.card.setCardBackgroundColor(context.getColor(R.color.white))
+            binding.button.rotation = 0F
+        }
     }
 }
