@@ -71,13 +71,13 @@
             app:layout_constraintTop_toBottomOf="@id/SurNameDoctorTextView" />
 
         <TextView
-            android:id="@+id/CityDoctorTextView"
+            android:id="@+id/RoomDoctorTextView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="32dp"
             android:layout_marginTop="8dp"
             android:layout_marginEnd="32dp"
-            android:text="Місто проживання"
+            android:text="Номер кабінету"
             android:textColor="@color/black"
             android:textSize="16sp"
             app:layout_constraintTop_toBottomOf="@id/SurNameDoctorEditText"
@@ -85,7 +85,7 @@
             />
 
         <EditText
-            android:id="@+id/CityDoctorEditText"
+            android:id="@+id/RoomDoctorEditText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="32dp"
@@ -94,7 +94,7 @@
             android:background="@drawable/input_design"
             android:inputType="textPostalAddress"
             android:padding="16dp"
-            app:layout_constraintTop_toBottomOf="@id/CityDoctorTextView" />
+            app:layout_constraintTop_toBottomOf="@id/RoomDoctorTextView" />
 
         <TextView
             android:id="@+id/DBirthDoctorTextView"
@@ -106,7 +106,7 @@
             android:text="Дата народження"
             android:textColor="@color/black"
             android:textSize="16sp"
-            app:layout_constraintTop_toBottomOf="@id/CityDoctorEditText"
+            app:layout_constraintTop_toBottomOf="@id/RoomDoctorEditText"
 
             />
 

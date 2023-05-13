@@ -42,31 +42,6 @@
         app:layout_constraintTop_toBottomOf="@id/BDateTextView" />
 
     <TextView
-        android:id="@+id/CityTextView"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="32dp"
-        android:layout_marginTop="16dp"
-        android:layout_marginEnd="32dp"
-        android:text="Місто проживання"
-        android:textColor="@color/black"
-        android:textSize="16dp"
-        app:layout_constraintTop_toBottomOf="@id/BDateEditText"
-
-        />
-
-    <EditText
-        android:id="@+id/CityEditText"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="32dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="32dp"
-        android:background="@drawable/input_design"
-        android:padding="16dp"
-        app:layout_constraintTop_toBottomOf="@id/CityTextView" />
-
-    <TextView
         android:id="@+id/SurnameTextView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -76,7 +51,7 @@
         android:text="Прізвище"
         android:textColor="@color/black"
         android:textSize="16dp"
-        app:layout_constraintTop_toBottomOf="@id/CityEditText"
+        app:layout_constraintTop_toBottomOf="@id/BDateEditText"
 
         />
 

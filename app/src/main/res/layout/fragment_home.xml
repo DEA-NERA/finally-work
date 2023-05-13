@@ -8,9 +8,13 @@
     tools:context=".ui.home.HomeFragment">
 
     <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/Border"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_margin="16dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="216dp"
         android:background="@drawable/selector_rectangle_border_green_radius_30"
         app:layout_constraintTop_toTopOf="parent">
 
@@ -58,17 +62,6 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <TextView
-            android:id="@+id/userCityTextView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:layout_marginTop="24dp"
-            android:text="Місто проживання"
-            android:textColor="@color/black"
-            android:textSize="18dp"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/userDateBirthTextView" />
 
         <TextView
             android:id="@+id/userNumberPhoneTextView"
@@ -80,7 +73,7 @@
             android:textColor="@color/black"
             android:textSize="18dp"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/userCityTextView" />
+            app:layout_constraintTop_toBottomOf="@+id/userDateBirthTextView" />
 
         <androidx.constraintlayout.widget.Barrier
             android:id="@+id/titlesBarrier"
@@ -88,7 +81,7 @@
             android:layout_height="wrap_content"
             app:barrierDirection="end"
             app:barrierMargin="16dp"
-            app:constraint_referenced_ids="userDateBirthTextView,userCityTextView,userNumberPhoneTextView" />
+            app:constraint_referenced_ids="userDateBirthTextView,userNumberPhoneTextView" />
 
         <TextView
             android:id="@+id/DataBirthTextView"
@@ -101,16 +94,7 @@
             app:layout_constraintStart_toEndOf="@+id/titlesBarrier"
             app:layout_constraintTop_toTopOf="@id/userDateBirthTextView" />
 
-        <TextView
-            android:id="@+id/CityTextView"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:textColor="@color/black"
-            android:textSize="18dp"
-            app:layout_constraintBottom_toBottomOf="@id/userCityTextView"
-            app:layout_constraintTop_toTopOf="@id/userCityTextView"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/titlesBarrier" />
+
         <TextView
             android:id="@+id/NumPhoneTextView"
             android:layout_width="0dp"
@@ -154,7 +138,19 @@
 
             />
 
-
     </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <TextView
+        android:id="@+id/textView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/black"
+        android:textSize="18sp"
+        android:layout_margin="16dp"
+        android:text="Клініка знаходиться у місті Хмельницький. За адресою Пр.Миру 43 "
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/Border"
+        />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

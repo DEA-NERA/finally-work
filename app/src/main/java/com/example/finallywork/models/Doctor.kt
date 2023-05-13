@@ -13,12 +13,16 @@ class Doctor(
     val id: String,
     val lastName: String,
     val firstName: String,
+    val roomNumber: String,
     val dateOfBirth: Date,
     val dateStartWork: Date,
     val rating: Double,
     val specializations: ArrayList<String>,
     val appointments: ArrayList<Appointment>
 ) {
+
+
+
     companion object {
         val firebaseFirestore: FirebaseFirestore by lazy { Firebase.firestore }
 
@@ -28,6 +32,7 @@ class Doctor(
         const val id = "id"
         const val lastName = "lastName"
         const val firstName = "firstName"
+        const val roomNumber = "roomNumber"
         const val dateOfBirth = "dateOfBirth"
         const val dateStartWork = "dateStartWork"
         const val specializations = "specializations"
@@ -38,6 +43,7 @@ class Doctor(
             firebaseFirestore.collection(collection)
                 .orderBy(lastName, Query.Direction.ASCENDING)
                 .orderBy(firstName, Query.Direction.ASCENDING)
+                .orderBy(roomNumber, Query.Direction.ASCENDING)
                 .get()
                 .addOnSuccessListener { documents ->
                     val result = ArrayList<Doctor>()
@@ -50,6 +56,7 @@ class Doctor(
                                     id = it.getString(id).toString(),
                                     lastName = it.getString(lastName).toString(),
                                     firstName = it.getString(firstName).toString(),
+                                    roomNumber = it.getString(roomNumber).toString(),
                                     dateOfBirth = dateBirth,
                                     dateStartWork = dateStart,
                                     specializations = it.get(specializations) as ArrayList<String>,
@@ -99,6 +106,7 @@ class Doctor(
                                     id = it.getString(Companion.id).toString(),
                                     lastName = it.getString(lastName).toString(),
                                     firstName = it.getString(firstName).toString(),
+                                    roomNumber = it.getString(roomNumber).toString(),
                                     dateOfBirth = dateBirth,
                                     dateStartWork = dateStart,
                                     specializations = it.get(specializations) as ArrayList<String>,
@@ -141,6 +149,7 @@ class Doctor(
                                     id = it.getString(id).toString(),
                                     lastName = it.getString(lastName).toString(),
                                     firstName = it.getString(firstName).toString(),
+                                    roomNumber = it.getString(roomNumber).toString(),
                                     dateOfBirth = dateBirth,
                                     dateStartWork = dateStart,
                                     specializations = it.get(specializations) as ArrayList<String>,
@@ -175,6 +184,7 @@ class Doctor(
             Doctor.id to id,
             Doctor.lastName to lastName,
             Doctor.firstName to firstName,
+            Doctor.roomNumber to roomNumber,
             Doctor.dateOfBirth to dateOfBirth,
             Doctor.dateStartWork to dateStartWork,
             Doctor.rating to rating,
@@ -237,6 +247,7 @@ class Doctor(
                             hashMapOf<String, Any>(
                                 Doctor.lastName to lastName,
                                 Doctor.firstName to firstName,
+                                Doctor.roomNumber to roomNumber,
                                 Doctor.dateOfBirth to dateOfBirth,
                                 Doctor.dateStartWork to dateStartWork,
                                 Doctor.specializations to specializations,

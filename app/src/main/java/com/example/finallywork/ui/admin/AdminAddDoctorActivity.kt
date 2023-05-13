@@ -47,6 +47,7 @@ class AdminAddDoctorActivity : AppCompatActivity() {
                         doctor = result
                         binding.NameDoctorEditText.setText(doctor.firstName)
                         binding.SurNameDoctorEditText.setText(doctor.lastName)
+                        binding.RoomDoctorEditText.setText(doctor.roomNumber)
                         binding.DBirthDoctorEditText.setText(
                             SimpleDateFormat(Doctor.DATE_FORMAT_PATTERN).format(
                                 doctor.dateOfBirth
@@ -182,6 +183,7 @@ class AdminAddDoctorActivity : AppCompatActivity() {
                     id = id,
                     lastName = binding.SurNameDoctorEditText.text.toString(),
                     firstName = binding.NameDoctorEditText.text.toString(),
+                    roomNumber=binding.RoomDoctorEditText.text.toString(),
                     dateOfBirth = birthDate,
                     dateStartWork = startWorkDate,
                     rating = 5.0,

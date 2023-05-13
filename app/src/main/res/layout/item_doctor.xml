@@ -102,6 +102,14 @@
                     android:layout_marginTop="16dp"
                     android:textColor="@color/black"
                     android:textSize="16sp" />
+                <TextView
+                    android:id="@+id/RoomDoctor"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="0dp"
+                    android:textColor="@color/black"
+                    android:textSize="16sp"
+                    tools:text="кабінет:" />
             </LinearLayout>
         </LinearLayout>
 
