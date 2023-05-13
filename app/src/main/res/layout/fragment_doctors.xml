@@ -20,7 +20,10 @@
         android:id="@+id/SearchAdminEditText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="12dp"
+        android:layout_marginTop="12dp"
+        android:layout_marginStart="12dp"
+        android:layout_marginEnd="46dp"
+        app:layout_constraintEnd_toEndOf="parent"
         android:background="@drawable/input_design"
         android:drawableStart="@drawable/ic_search"
         android:drawablePadding="8dp"
@@ -40,5 +43,14 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <Button
+        android:id="@+id/FilterBtn"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:background="@drawable/ic_filter"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@id/SearchAdminEditText"
+        app:layout_constraintStart_toEndOf="@id/SearchAdminEditText"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

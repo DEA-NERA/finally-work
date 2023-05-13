@@ -15,6 +15,9 @@
             android:name=".ui.appointment.RateAppointmentActivity"
             android:exported="false" />
         <activity
+            android:name=".FilterActivity"
+            android:exported="false" />
+        <activity
             android:name=".ui.appointment.CreateAppointmentActivity"
             android:exported="false" />
         <activity
