@@ -15,7 +15,7 @@
         android:paddingBottom="16dp">
 
         <de.hdodenhof.circleimageview.CircleImageView
-            android:id="@+id/DoctorAvatar"
+            android:id="@+id/Avatar"
             android:layout_width="100dp"
             android:layout_height="100dp"
             android:layout_margin="16dp"
@@ -31,8 +31,8 @@
             android:textColor="@color/black"
             android:textSize="20sp"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@id/DoctorAvatar"
-            app:layout_constraintTop_toTopOf="@id/DoctorAvatar"
+            app:layout_constraintStart_toEndOf="@id/Avatar"
+            app:layout_constraintTop_toTopOf="@id/Avatar"
             tools:text="Буряковська Настя" />
 
         <TextView
@@ -44,7 +44,7 @@
             android:textColor="@color/black"
             android:textSize="16sp"
             app:drawableEndCompat="@drawable/ic_star"
-            app:layout_constraintStart_toEndOf="@id/DoctorAvatar"
+            app:layout_constraintStart_toEndOf="@id/Avatar"
             app:layout_constraintTop_toBottomOf="@id/NameDoctor" />
 
         <androidx.constraintlayout.widget.Barrier
@@ -53,7 +53,7 @@
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             app:barrierDirection="bottom"
-            app:constraint_referenced_ids="RatingDoctor,DoctorAvatar" />
+            app:constraint_referenced_ids="RatingDoctor,Avatar" />
 
         <LinearLayout
             android:id="@+id/detailsContainer"

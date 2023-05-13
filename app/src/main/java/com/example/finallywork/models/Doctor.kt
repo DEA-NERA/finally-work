@@ -1,8 +1,10 @@
 package com.example.finallywork.models
 
+import android.util.Log
 import com.google.firebase.Timestamp
 import com.google.firebase.firestore.Filter
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.Query
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import java.util.Date
@@ -34,6 +36,8 @@ class Doctor(
 
         fun getAll(onSuccess: (ArrayList<Doctor>) -> Unit, onFailure: (String) -> Unit) {
             firebaseFirestore.collection(collection)
+                .orderBy(lastName, Query.Direction.ASCENDING)
+                .orderBy(firstName, Query.Direction.ASCENDING)
                 .get()
                 .addOnSuccessListener { documents ->
                     val result = ArrayList<Doctor>()
@@ -60,7 +64,10 @@ class Doctor(
 
                 }
                 .addOnFailureListener { exception ->
-                    exception.localizedMessage?.let { onFailure.invoke(it) }
+                    exception.localizedMessage?.let {
+                        Log.e("TAG", it)
+                        onFailure.invoke(it)
+                    }
                 }
         }
 

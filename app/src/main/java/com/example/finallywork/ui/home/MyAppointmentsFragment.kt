@@ -1,5 +1,6 @@
 package com.example.finallywork.ui.home
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -10,6 +11,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.finallywork.databinding.FragmentMyAppointmentsBinding
 import com.example.finallywork.models.UserAppointment
 import com.example.finallywork.ui.adapters.AppointmentAdapter
+import com.example.finallywork.ui.appointment.RateAppointmentActivity
 
 class MyAppointmentsFragment : Fragment() {
 
@@ -38,6 +40,13 @@ class MyAppointmentsFragment : Fragment() {
                     }
                 }
             )
+        }
+
+        appointmentAdapter.onRateClick = {
+            val rateIntent = Intent(requireContext(), RateAppointmentActivity::class.java)
+            rateIntent.putExtra("doctor", it.doctorId)
+            rateIntent.putExtra("appointment", it.id)
+            startActivity(rateIntent)
         }
 
         binding.appointmentsList.apply {

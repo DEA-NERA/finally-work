@@ -9,6 +9,7 @@ import com.example.finallywork.models.UserAppointment
 import com.example.finallywork.ui.adapters.TimeAdapter
 import com.google.firebase.auth.FirebaseAuth
 import java.util.Calendar
+import java.util.UUID
 
 class CreateAppointmentActivity : AppCompatActivity() {
     private lateinit var binding: ActivityCreateAppointmentBinding
@@ -52,9 +53,11 @@ class CreateAppointmentActivity : AppCompatActivity() {
             doctor?.let { doctor ->
                 firebaseAuth.currentUser?.uid?.let { userId ->
                     userAppointment = UserAppointment(
+                        id = UUID.randomUUID().toString(),
                         date = it.date,
                         userId = userId,
-                        doctorId = doctor.id
+                        doctorId = doctor.id,
+                        isRated = false
                     )
                 }
             }

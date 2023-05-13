@@ -20,6 +20,7 @@ class AppointmentAdapter(private val context: Context) :
             notifyDataSetChanged()
         }
     var onCancelClick: ((UserAppointment) -> Unit)? = null
+    var onRateClick: ((UserAppointment) -> Unit)? = null
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AppointmentViewHolder {
         return AppointmentViewHolder(
@@ -52,15 +53,21 @@ class AppointmentAdapter(private val context: Context) :
                         SimpleDateFormat(UserAppointment.DATE_FORMAT_PATTERN).format(item.date.time)
                     binding.appointmentTime.text =
                         SimpleDateFormat(UserAppointment.TIME_FORMAT_PATTERN).format(item.date.time)
-                    if (Date() < item.date) {
+                    if (Date() < item.date && !item.isRated) {
                         binding.rateAppointmentButton.visibility = View.GONE
                         binding.cancelAppointmentButton.visibility = View.VISIBLE
-                    } else {
+                    } else if (Date() > item.date && !item.isRated) {
                         binding.rateAppointmentButton.visibility = View.VISIBLE
+                        binding.cancelAppointmentButton.visibility = View.GONE
+                    } else {
+                        binding.rateAppointmentButton.visibility = View.GONE
                         binding.cancelAppointmentButton.visibility = View.GONE
                     }
                     binding.cancelAppointmentButton.setOnClickListener {
                         onCancelClick?.invoke(item)
+                    }
+                    binding.rateAppointmentButton.setOnClickListener {
+                        onRateClick?.invoke(item)
                     }
                 },
                 onFailure = { exception ->
