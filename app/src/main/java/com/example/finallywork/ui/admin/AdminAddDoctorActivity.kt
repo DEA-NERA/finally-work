@@ -37,6 +37,7 @@ import java.text.SimpleDateFormat
 import java.time.LocalDate
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
+import java.time.temporal.ChronoField
 import java.util.Calendar
 import java.util.UUID
 
@@ -227,7 +228,11 @@ class AdminAddDoctorActivity : AppCompatActivity() {
             calendar.get(Calendar.MONTH),
             calendar.get(Calendar.DAY_OF_MONTH)
         )
+
         datePickerDialog.datePicker.maxDate = calendar.timeInMillis
+        if (editText == binding.DBirthDoctorEditText)
+            datePickerDialog.datePicker.maxDate =
+                LocalDate.now().minusYears(18).getLong(ChronoField.INSTANT_SECONDS)
 
         datePickerDialog.datePicker.init(
             calendar.get(Calendar.YEAR),
@@ -305,7 +310,7 @@ class AdminAddDoctorActivity : AppCompatActivity() {
                     rating = 5.0,
                     specializations = specializations,
                     appointments = appointments,
-                    photoUrl = doctor.photoUrl
+                    photoUrl = doctor.photoUrl ?: "null"
                 )
             } ?: return null
         } ?: return null
