@@ -1,15 +1,71 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:animateLayoutChanges="true"
     tools:context=".ui.home.InfoFragment">
 
-    <TextView
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_margin="16dp"
-        android:text="@string/large_text"
-        android:textColor="@color/black"/>
-</androidx.core.widget.NestedScrollView>
+        android:layout_height="wrap_content">
+
+        <ImageView
+            android:id="@+id/depressionImg"
+            android:layout_width="200dp"
+            android:layout_height="200dp"
+            android:src="@drawable/img_depression"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/depressionText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="16dp"
+            android:text="@string/large_text"
+            android:textColor="@color/black"
+            app:layout_constraintTop_toBottomOf="@id/depressionImg" />
+
+        <ImageView
+            android:id="@+id/panicImg"
+            android:layout_width="200dp"
+            android:layout_height="200dp"
+            android:src="@drawable/img_panic"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/depressionText" />
+
+        <TextView
+            android:id="@+id/panicText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="16dp"
+            android:text="@string/panic"
+            android:textColor="@color/black"
+            app:layout_constraintTop_toBottomOf="@id/panicImg" />
+
+        <ImageView
+            android:id="@+id/loveselfImg"
+            android:layout_width="200dp"
+            android:layout_height="200dp"
+            android:src="@drawable/img_loveself"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/panicText" />
+
+        <TextView
+            android:id="@+id/loveselfText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="16dp"
+            android:text="@string/loveself"
+            android:textColor="@color/black"
+            app:layout_constraintTop_toBottomOf="@id/loveselfImg" />
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</ScrollView>
