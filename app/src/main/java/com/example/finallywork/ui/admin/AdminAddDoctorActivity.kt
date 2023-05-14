@@ -37,7 +37,6 @@ import java.text.SimpleDateFormat
 import java.time.LocalDate
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
-import java.time.temporal.ChronoField
 import java.util.Calendar
 import java.util.UUID
 
@@ -45,7 +44,7 @@ class AdminAddDoctorActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityAdminAddDoctorBinding
     private val listOfSpecializationsCheckBoxes = ArrayList<CheckBox>()
-    private lateinit var doctor: Doctor
+    private var doctor: Doctor? = null
 
     companion object {
         private const val STORAGE_PERMISSION_CODE = 101
@@ -71,14 +70,14 @@ class AdminAddDoctorActivity : AppCompatActivity() {
                 val reference =
                     storageReference.child("files/userImage/" + UUID.randomUUID().toString())
                 lifecycleScope.launch {
-                    doctor.photoUrl = reference.putFile(
+                    doctor?.photoUrl = reference.putFile(
                         Uri.parse(uri.toString()), metadata
                     ).await()
                         .storage
                         .downloadUrl
                         .await()
                         .toString()
-                    doctor.photoUrl?.let { url ->
+                    doctor?.photoUrl?.let { url ->
                         if (url == "null") {
                             binding.AvatarImageView.setImageResource(R.drawable.photo_default)
                         } else
@@ -121,27 +120,28 @@ class AdminAddDoctorActivity : AppCompatActivity() {
                             binding.AddDoctorButton.visibility = View.GONE
                             binding.EditDoctorButton.visibility = View.VISIBLE
                             doctor = result
-                            doctor.photoUrl?.let { url ->
+                            result.photoUrl?.let { url ->
                                 if (url == "null") {
                                     binding.AvatarImageView.setImageResource(R.drawable.photo_default)
-                                } else
-                                    Picasso.get().load(it).into(binding.AvatarImageView)
+                                } else {
+                                    Picasso.get().load(url).into(binding.AvatarImageView)
+                                }
                             } ?: binding.AvatarImageView.setImageResource(R.drawable.photo_default)
-                            binding.NameDoctorEditText.setText(doctor.firstName)
-                            binding.SurNameDoctorEditText.setText(doctor.lastName)
-                            binding.RoomDoctorEditText.setText(doctor.roomNumber)
+                            binding.NameDoctorEditText.setText(result.firstName)
+                            binding.SurNameDoctorEditText.setText(result.lastName)
+                            binding.RoomDoctorEditText.setText(result.roomNumber)
                             binding.DBirthDoctorEditText.setText(
                                 SimpleDateFormat(Doctor.DATE_FORMAT_PATTERN).format(
-                                    doctor.dateOfBirth
+                                    result.dateOfBirth
                                 )
                             )
                             binding.DateStartWorkDoctorEditText.setText(
                                 SimpleDateFormat(Doctor.DATE_FORMAT_PATTERN).format(
-                                    doctor.dateStartWork
+                                    result.dateStartWork
                                 )
                             )
                             listOfSpecializationsCheckBoxes.map { checkBox ->
-                                doctor.specializations.map { specialization ->
+                                result.specializations.map { specialization ->
                                     if (checkBox.text == specialization) {
                                         checkBox.isChecked = true
                                     }
@@ -230,10 +230,10 @@ class AdminAddDoctorActivity : AppCompatActivity() {
         )
 
         datePickerDialog.datePicker.maxDate = calendar.timeInMillis
-        if (editText == binding.DBirthDoctorEditText)
-            datePickerDialog.datePicker.maxDate =
-                LocalDate.now().minusYears(18).getLong(ChronoField.INSTANT_SECONDS)
-
+        if (editText == binding.DBirthDoctorEditText) {
+            calendar.add(Calendar.YEAR, -18)
+            datePickerDialog.datePicker.maxDate = calendar.timeInMillis
+        }
         datePickerDialog.datePicker.init(
             calendar.get(Calendar.YEAR),
             calendar.get(Calendar.MONTH),
@@ -298,8 +298,14 @@ class AdminAddDoctorActivity : AppCompatActivity() {
         dateOfBirth?.let { birthDate ->
             dateStartWork?.let { startWorkDate ->
                 var id = UUID.randomUUID().toString()
-                if (isCreate == false && doctor != null)
-                    id = doctor.id
+                doctor?.let {
+                    if (isCreate == false)
+                        id = it.id
+                }
+                var photo = "null"
+                doctor?.photoUrl?.let {
+                    photo = it
+                }
                 return Doctor(
                     id = id,
                     lastName = binding.SurNameDoctorEditText.text.toString(),
@@ -310,7 +316,7 @@ class AdminAddDoctorActivity : AppCompatActivity() {
                     rating = 5.0,
                     specializations = specializations,
                     appointments = appointments,
-                    photoUrl = doctor.photoUrl ?: "null"
+                    photoUrl = photo
                 )
             } ?: return null
         } ?: return null
