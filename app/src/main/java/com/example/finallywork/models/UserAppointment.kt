@@ -7,7 +7,6 @@ import com.google.firebase.firestore.Query
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import java.util.Date
-import java.util.UUID
 
 /*
  * Created by Vladyslava Buriakovska on 10.05.2023
@@ -49,7 +48,7 @@ data class UserAppointment(
                                 isRated?.let { isRated ->
                                     result.add(
                                         UserAppointment(
-                                            id = UUID.randomUUID().toString(),
+                                            id = it.getString(id).toString(),
                                             date = date,
                                             userId = it.getString(userId).toString(),
                                             doctorId = it.getString(doctorId).toString(),
@@ -69,6 +68,38 @@ data class UserAppointment(
                         }
                     }
             }
+        }
+
+        fun getById(
+            id: String,
+            onSuccess: (UserAppointment) -> Unit,
+            onFailure: (String) -> Unit
+        ) {
+            firebaseFirestore.collection(collection)
+                .whereEqualTo(UserAppointment.id, id)
+                .get()
+                .addOnSuccessListener { task ->
+                    task.documents.map {
+                        val appointmentDate = it.getDate(date)
+                        val isRated = it.getBoolean("isRated")
+                        appointmentDate?.let { date ->
+                            isRated?.let { isRated ->
+                                onSuccess.invoke(
+                                    UserAppointment(
+                                        id = it.getString(UserAppointment.id).toString(),
+                                        date = date,
+                                        userId = it.getString(userId).toString(),
+                                        doctorId = it.getString(doctorId).toString(),
+                                        isRated = isRated
+                                    )
+                                )
+                            }
+                        }
+                    }
+                }
+                .addOnFailureListener { exception ->
+                    exception.localizedMessage?.let { onFailure.invoke(it) }
+                }
         }
     }
 
@@ -106,6 +137,37 @@ data class UserAppointment(
                         .addOnFailureListener { exception ->
                             exception.localizedMessage?.let { onFailure.invoke(it) }
                         }
+                }
+            }
+            .addOnFailureListener { exception ->
+                exception.localizedMessage?.let { onFailure.invoke(it) }
+            }
+    }
+
+    fun makeRated(onSuccess: () -> Unit, onFailure: (String) -> Unit) {
+        firebaseFirestore.collection(collection)
+            .whereEqualTo(UserAppointment.id, id)
+            .get()
+            .addOnSuccessListener { task ->
+                task.documents.map { document ->
+                    firebaseFirestore.collection(collection)
+                        .document(
+                            document.id
+                        ).update(
+                            hashMapOf<String, Any>(
+                                UserAppointment.isRated to true
+                            )
+                        ).addOnSuccessListener {
+                            onSuccess.invoke()
+                        }
+                        .addOnFailureListener { exception ->
+                            exception.localizedMessage?.let {
+                                onFailure.invoke(
+                                    it
+                                )
+                            }
+                        }
+
                 }
             }
             .addOnFailureListener { exception ->

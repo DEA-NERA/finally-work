@@ -10,44 +10,45 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/Border"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_marginTop="16dp"
+        android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
         android:layout_marginEnd="16dp"
-        android:layout_marginBottom="216dp"
         android:background="@drawable/selector_rectangle_border_green_radius_30"
         app:layout_constraintTop_toTopOf="parent">
 
         <de.hdodenhof.circleimageview.CircleImageView
             android:id="@+id/Avatar"
-            android:layout_width="144dp"
-            android:layout_height="144dp"
+            android:layout_width="120dp"
+            android:layout_height="120dp"
             android:layout_margin="16dp"
             android:src="@drawable/photo_default"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
             app:civ_border_color="@color/black"
             app:civ_border_width="1dp"
-            />
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
         <TextView
             android:id="@+id/userNameTextView"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="24dp"
-            android:layout_marginEnd="48dp"
+            android:layout_margin="16dp"
             android:textColor="@color/black"
-            android:textSize="18dp"
-            app:layout_constraintEnd_toStartOf="@id/RemoveBtn"
+            android:textSize="18sp"
+            app:layout_constraintEnd_toStartOf="@id/editButton"
+            app:layout_constraintStart_toEndOf="@id/Avatar"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintStart_toStartOf="@id/titlesBarrier"/>
+            tools:text="Буряковська Анастасія" />
 
         <TextView
             android:id="@+id/userEmailTextView"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="32dp"
-            android:layout_marginEnd="16dp"
+            android:layout_margin="16dp"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/Avatar"
+            android:textColor="@color/black"
+            android:textSize="16sp"
             app:layout_constraintTop_toBottomOf="@+id/userNameTextView" />
 
         <TextView
@@ -58,7 +59,7 @@
             android:layout_marginTop="188dp"
             android:text="Дата народження"
             android:textColor="@color/black"
-            android:textSize="18dp"
+            android:textSize="18sp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
@@ -71,7 +72,7 @@
             android:layout_marginTop="24dp"
             android:text="Номер телефону"
             android:textColor="@color/black"
-            android:textSize="18dp"
+            android:textSize="18sp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/userDateBirthTextView" />
 
@@ -88,7 +89,8 @@
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:textColor="@color/black"
-            android:textSize="18dp"
+            android:textSize="18sp"
+            android:layout_marginHorizontal="16dp"
             app:layout_constraintBottom_toBottomOf="@id/userDateBirthTextView"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/titlesBarrier"
@@ -100,7 +102,8 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:textColor="@color/black"
-            android:textSize="18dp"
+            android:textSize="18sp"
+            android:layout_marginHorizontal="16dp"
             app:layout_constraintBottom_toBottomOf="@id/userNumberPhoneTextView"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/titlesBarrier" />
@@ -109,34 +112,34 @@
         <Button
             android:id="@+id/DellAccBtn"
             android:layout_width="46dp"
-            android:layout_height="44dp"
+            android:layout_height="0dp"
             android:layout_marginEnd="16dp"
-            android:layout_marginBottom="8dp"
             android:background="@drawable/dell_acc"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent" />
+            app:layout_constraintBottom_toBottomOf="@id/ExitAccBtn"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@id/ExitAccBtn" />
 
         <Button
             android:id="@+id/ExitAccBtn"
             android:layout_width="46dp"
             android:layout_height="44dp"
             android:layout_marginStart="16dp"
-            android:layout_marginBottom="8dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginBottom="16dp"
             android:background="@drawable/exit_acc"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@id/DellAccBtn" />
+            app:layout_constraintEnd_toStartOf="@id/DellAccBtn"
+            app:layout_constraintTop_toBottomOf="@id/NumPhoneTextView" />
 
         <Button
-            android:id="@+id/RemoveBtn"
-            android:layout_width="42dp"
+            android:id="@+id/editButton"
+            android:layout_width="40dp"
             android:layout_height="40dp"
-            android:layout_marginTop="12dp"
-            android:layout_marginEnd="8dp"
+            android:layout_marginEnd="16dp"
             android:background="@drawable/remove"
+            app:layout_constraintBottom_toBottomOf="@id/userNameTextView"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-
-            />
+            app:layout_constraintTop_toTopOf="@id/userNameTextView" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -144,11 +147,10 @@
         android:id="@+id/textView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textColor="@color/black"
-        android:textSize="18sp"
         android:layout_margin="16dp"
-        android:text="Клініка знаходиться у місті Хмельницький. За адресою Пр.Миру 43 "
-        app:layout_constraintTop_toBottomOf="@id/Border"
-        />
+        android:text="* Клініка знаходиться у місті Хмельницький. За адресою Пр.Миру 43 "
+        android:textColor="@color/black"
+        android:textSize="14sp"
+        app:layout_constraintBottom_toBottomOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

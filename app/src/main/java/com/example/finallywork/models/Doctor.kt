@@ -274,4 +274,31 @@ class Doctor(
                 exception.localizedMessage?.let { onFailure.invoke(it) }
             }
     }
+
+    fun calculateRate(reviewRating: Int, onSuccess: () -> Unit, onFailure: (String) -> Unit) {
+        firebaseFirestore.collection(collection)
+            .whereEqualTo(Doctor.id, id)
+            .get()
+            .addOnSuccessListener { task ->
+                task.documents.map { document ->
+                    firebaseFirestore.collection(collection)
+                        .document(
+                            document.id
+                        ).update(
+                            hashMapOf<String, Any>(
+                                Doctor.rating to (reviewRating + rating) / 2
+                            )
+                        )
+                        .addOnSuccessListener {
+                            onSuccess.invoke()
+                        }
+                        .addOnFailureListener { exception ->
+                            exception.localizedMessage?.let { onFailure.invoke(it) }
+                        }
+                }
+            }
+            .addOnFailureListener { exception ->
+                exception.localizedMessage?.let { onFailure.invoke(it) }
+            }
+    }
 }

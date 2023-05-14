@@ -8,13 +8,14 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
+import com.example.finallywork.R
 import com.example.finallywork.databinding.FragmentHomeBinding
 import com.example.finallywork.models.User
+import com.example.finallywork.models.UserAppointment
 import com.example.finallywork.ui.auth.LoginActivity
-import com.google.firebase.Timestamp
 import com.google.firebase.auth.FirebaseAuth
+import com.squareup.picasso.Picasso
 import java.text.SimpleDateFormat
-import java.util.*
 
 class HomeFragment : Fragment() {
 
@@ -31,23 +32,8 @@ class HomeFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         binding = FragmentHomeBinding.inflate(inflater, container, false)
-        val createdAtTimestamp = Timestamp(Date())
-        val dateFormat = SimpleDateFormat("dd.MM.yyyy", Locale.getDefault())
-        val formattedDate = dateFormat.format(createdAtTimestamp.toDate())
-        firebaseAuth.currentUser?.let {
-            User.getUser(
-                authId = it.uid,
-                onSuccess = { user ->
-                    binding.userNameTextView.text = user.lastName + " " + user.firstName
-                    binding.userDateBirthTextView.paintFlags = Paint.UNDERLINE_TEXT_FLAG
-                    binding.DataBirthTextView.text = formattedDate
-                    binding.userNumberPhoneTextView.paintFlags = Paint.UNDERLINE_TEXT_FLAG
 
-                },
-                onFailure = { exception ->
-                    Toast.makeText(requireContext(), exception, Toast.LENGTH_LONG).show()
-                })
-        }
+
         binding.ExitAccBtn.setOnClickListener {
             firebaseAuth.currentUser?.let {
                 firebaseAuth.signOut()
@@ -67,14 +53,43 @@ class HomeFragment : Fragment() {
                 Toast.makeText(requireContext(), it, Toast.LENGTH_LONG).show()
             })
         }
-
-
-
-
+        binding.editButton.setOnClickListener {
+            startActivity(Intent(requireContext(), EditProfileActivity::class.java))
+        }
 
         return binding.root
     }
 
+    override fun onResume() {
+        super.onResume()
+        getUser()
+    }
+
+    private fun getUser() {
+        firebaseAuth.currentUser?.let {
+            User.getUser(
+                authId = it.uid,
+                onSuccess = { user ->
+                    binding.userDateBirthTextView.paintFlags = Paint.UNDERLINE_TEXT_FLAG
+                    binding.userNumberPhoneTextView.paintFlags = Paint.UNDERLINE_TEXT_FLAG
+
+                    binding.userNameTextView.text = user.lastName + " " + user.firstName
+                    binding.userEmailTextView.text = it.email
+                    binding.DataBirthTextView.text =
+                        SimpleDateFormat(UserAppointment.DATE_FORMAT_PATTERN).format(user.dateOfBirth?.time)
+                    binding.NumPhoneTextView.text = user.phoneNumber
+                    user.photoUrl?.let { url ->
+                        if (url == "null") {
+                            binding.Avatar.setImageResource(R.drawable.photo_default)
+                        } else
+                            Picasso.get().load(url).into(binding.Avatar)
+                    } ?: binding.Avatar.setImageResource(R.drawable.photo_default)
+                },
+                onFailure = { exception ->
+                    Toast.makeText(requireContext(), exception, Toast.LENGTH_LONG).show()
+                })
+        }
+    }
 
 }
 

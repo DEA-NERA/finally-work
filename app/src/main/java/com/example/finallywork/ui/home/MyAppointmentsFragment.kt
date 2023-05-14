@@ -27,7 +27,6 @@ class MyAppointmentsFragment : Fragment() {
         binding = FragmentMyAppointmentsBinding.inflate(inflater, container, false)
 
         appointmentAdapter = AppointmentAdapter(requireContext())
-        getAllAppointments()
 
         appointmentAdapter.onCancelClick = {
             it.delete(
@@ -55,6 +54,11 @@ class MyAppointmentsFragment : Fragment() {
             adapter = appointmentAdapter
         }
         return binding.root
+    }
+
+    override fun onResume() {
+        super.onResume()
+        getAllAppointments()
     }
 
     private fun getAllAppointments() {

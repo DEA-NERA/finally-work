@@ -7,12 +7,13 @@ import com.google.firebase.ktx.Firebase
 import java.util.Date
 
 data class User(
-    val authId: String,
-    val lastName: String,
-    val firstName: String,
-    val dateOfBirth: Date,
+    val authId: String? = null,
+    val lastName: String? = null,
+    val firstName: String? = null,
+    val dateOfBirth: Date? = null,
     val role: Role? = Role.USER,
-    val photoUrl: String
+    var photoUrl: String? = null,
+    var phoneNumber: String? = null
 ) {
     companion object {
         val firebaseFirestore: FirebaseFirestore by lazy { Firebase.firestore }
@@ -26,6 +27,7 @@ data class User(
         const val dateOfBirth = "dateOfBirth"
         const val role = "role"
         const val photoUrl = "photoUrl"
+        const val phoneNumber = "phoneNumber"
 
         fun getUser(authId: String, onSuccess: (User) -> Unit, onFailure: (String) -> Unit) {
             firebaseFirestore.collection(collection)
@@ -39,17 +41,18 @@ data class User(
                         dateOfBirth?.let { date ->
                             val user = User(
                                 authId,
-                                lastName = it.getString(lastName).toString(),
+                                lastName = it.getString(lastName),
                                 firstName = it.getString(
                                     firstName
-                                ).toString(),
+                                ),
                                 dateOfBirth = date,
                                 role = Role.valueOf(
                                     it.getString(
                                         role
                                     ).toString()
                                 ),
-                                photoUrl = it.getString(photoUrl).toString()
+                                photoUrl = it.getString(photoUrl),
+                                phoneNumber = it.getString(phoneNumber)
                             )
                             onSuccess.invoke(user)
                         }
@@ -103,12 +106,61 @@ data class User(
             User.firstName to firstName,
             User.dateOfBirth to dateOfBirth,
             User.role to role,
-            User.photoUrl to photoUrl
+            User.photoUrl to photoUrl,
+            User.phoneNumber to phoneNumber
         )
         firebaseFirestore.collection(collection)
             .add(user)
             .addOnSuccessListener {
                 onSuccess.invoke()
+            }
+            .addOnFailureListener { exception ->
+                exception.localizedMessage?.let { onFailure.invoke(it) }
+            }
+    }
+
+    fun edit(onSuccess: () -> Unit, onFailure: (String) -> Unit) {
+        firebaseFirestore.collection(collection)
+            .whereEqualTo(User.authId, authId)
+            .get()
+            .addOnSuccessListener { task ->
+                task.documents.map { document ->
+                    lastName?.let { lastName ->
+                        firstName?.let { firstName ->
+                            phoneNumber?.let { phone ->
+                                dateOfBirth?.let { date ->
+                                    photoUrl?.let { url ->
+                                        firebaseFirestore.collection(collection)
+                                            .document(
+                                                document.id
+                                            ).update(
+                                                hashMapOf<String, Any>(
+                                                    User.lastName to lastName,
+                                                    User.firstName to firstName,
+                                                    User.phoneNumber to phone,
+                                                    User.dateOfBirth to dateOfBirth,
+                                                    User.photoUrl to url
+                                                )
+                                            )
+                                            .addOnSuccessListener {
+                                                onSuccess.invoke()
+                                            }
+                                            .addOnFailureListener { exception ->
+                                                exception.localizedMessage?.let {
+                                                    onFailure.invoke(
+                                                        it
+                                                    )
+                                                }
+                                            }
+                                    }
+                                }
+
+                            }
+
+                        }
+                    }
+
+                }
             }
             .addOnFailureListener { exception ->
                 exception.localizedMessage?.let { onFailure.invoke(it) }

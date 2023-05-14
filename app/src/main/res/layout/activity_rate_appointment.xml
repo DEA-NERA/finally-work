@@ -6,16 +6,23 @@
     android:layout_height="match_parent"
     tools:context=".ui.appointment.RateAppointmentActivity">
 
-    <TextView
-        android:id="@+id/title"
+    <Toolbar
+        android:id="@+id/toolbar"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="16dp"
-        android:gravity="center"
-        android:text="Оціни лікаря"
-        android:textColor="@color/black"
-        android:textSize="24sp"
-        app:layout_constraintTop_toTopOf="parent" />
+        android:layout_height="?actionBarSize"
+        android:navigationIcon="@drawable/ic_arrow_left_light"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <TextView
+            android:id="@+id/title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:text="Оціни лікаря"
+            android:textColor="@color/black"
+            android:textSize="24sp" />
+    </Toolbar>
 
 
     <de.hdodenhof.circleimageview.CircleImageView
@@ -29,7 +36,7 @@
         app:civ_border_width="1dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/title" />
+        app:layout_constraintTop_toBottomOf="@id/toolbar" />
 
     <TextView
         android:id="@+id/doctorName"

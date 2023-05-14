@@ -6,11 +6,13 @@ import androidx.appcompat.app.AppCompatActivity
 import com.example.finallywork.databinding.ActivityRateAppointmentBinding
 import com.example.finallywork.models.Doctor
 import com.example.finallywork.models.Review
+import com.example.finallywork.models.UserAppointment
 import java.util.UUID
 
 class RateAppointmentActivity : AppCompatActivity() {
     private lateinit var binding: ActivityRateAppointmentBinding
     private var doctor: Doctor? = null
+    private var doctorId: String? = null
     private var appointmentId: String? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -18,10 +20,10 @@ class RateAppointmentActivity : AppCompatActivity() {
         binding = ActivityRateAppointmentBinding.inflate(layoutInflater)
         setContentView(binding.root)
         intent?.let {
-            val doctorId = intent.getStringExtra("doctor")
+            doctorId = intent.getStringExtra("doctor")
             doctorId?.let {
                 Doctor.getById(
-                    doctorId,
+                    it,
                     onSuccess = { result ->
                         doctor = result
                         binding.doctorName.text = result.lastName + " " + result.firstName
@@ -30,10 +32,7 @@ class RateAppointmentActivity : AppCompatActivity() {
                         Toast.makeText(this, exception, Toast.LENGTH_LONG).show()
                     })
             }
-            val appointment = intent.getStringExtra("appointment")
-            appointment?.let {
-                appointmentId = it
-            }
+            appointmentId = intent.getStringExtra("appointment")
         }
 
         binding.submitButton.setOnClickListener {
@@ -44,13 +43,51 @@ class RateAppointmentActivity : AppCompatActivity() {
                     rating = binding.ratingBar.numStars
                 ).addToDataBase(
                     onSuccess = {
-                        finish()
+                        getAppointment(appointment)
                     },
                     onFailure = { exception ->
                         Toast.makeText(this, exception, Toast.LENGTH_LONG).show()
                     })
             }
         }
+    }
 
+    private fun getAppointment(id: String) {
+        UserAppointment.getById(
+            id = id,
+            onSuccess = { userAppointment ->
+                userAppointment.makeRated(
+                    onSuccess = {
+                        doctorId?.let { getDoctor(it) }
+                    },
+                    onFailure = { exception ->
+                        Toast.makeText(this, exception, Toast.LENGTH_LONG).show()
+                    })
+            },
+            onFailure = { exception ->
+                Toast.makeText(this, exception, Toast.LENGTH_LONG).show()
+            })
+    }
+
+
+    private fun getDoctor(id: String) {
+        Doctor.getById(
+            id = id,
+            onSuccess = { doctor ->
+                doctor.calculateRate(
+                    reviewRating = binding.ratingBar.progress,
+                    onSuccess = {
+                        finish()
+                    },
+                    onFailure = { exception ->
+                        Toast.makeText(this, exception, Toast.LENGTH_LONG)
+                            .show()
+                    })
+                finish()
+            },
+            onFailure = { exception ->
+                Toast.makeText(this, exception, Toast.LENGTH_LONG).show()
+            }
+        )
     }
 }

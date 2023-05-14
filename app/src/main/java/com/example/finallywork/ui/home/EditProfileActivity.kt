@@ -1,4 +1,4 @@
-package com.example.finallywork.ui.admin
+package com.example.finallywork.ui.home
 
 import android.app.Activity
 import android.app.DatePickerDialog
@@ -8,8 +8,6 @@ import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
-import android.view.View
-import android.widget.CheckBox
 import android.widget.EditText
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
@@ -22,10 +20,10 @@ import com.canhub.cropper.CropImageContractOptions
 import com.canhub.cropper.CropImageOptions
 import com.canhub.cropper.CropImageView
 import com.example.finallywork.R
-import com.example.finallywork.databinding.ActivityAdminAddDoctorBinding
-import com.example.finallywork.models.Appointment
+import com.example.finallywork.databinding.ActivityEditProfileBinding
 import com.example.finallywork.models.Doctor
 import com.example.finallywork.models.User
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.StorageReference
 import com.google.firebase.storage.ktx.storage
@@ -40,11 +38,12 @@ import java.time.format.DateTimeFormatter
 import java.util.Calendar
 import java.util.UUID
 
-class AdminAddDoctorActivity : AppCompatActivity() {
+class EditProfileActivity : AppCompatActivity() {
 
-    private lateinit var binding: ActivityAdminAddDoctorBinding
-    private val listOfSpecializationsCheckBoxes = ArrayList<CheckBox>()
-    private lateinit var doctor: Doctor
+
+    private lateinit var binding: ActivityEditProfileBinding
+    private lateinit var user: User
+    private val firebaseAuth: FirebaseAuth by lazy { FirebaseAuth.getInstance() }
 
     companion object {
         private const val STORAGE_PERMISSION_CODE = 101
@@ -70,14 +69,14 @@ class AdminAddDoctorActivity : AppCompatActivity() {
                 val reference =
                     storageReference.child("files/userImage/" + UUID.randomUUID().toString())
                 lifecycleScope.launch {
-                    doctor.photoUrl = reference.putFile(
+                    user.photoUrl = reference.putFile(
                         Uri.parse(uri.toString()), metadata
                     ).await()
                         .storage
                         .downloadUrl
                         .await()
                         .toString()
-                    doctor.photoUrl?.let { url ->
+                    user.photoUrl?.let { url ->
                         if (url == "null") {
                             binding.AvatarImageView.setImageResource(R.drawable.photo_default)
                         } else
@@ -92,15 +91,10 @@ class AdminAddDoctorActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_edit_profile)
 
-        binding = ActivityAdminAddDoctorBinding.inflate(layoutInflater)
+        binding = ActivityEditProfileBinding.inflate(layoutInflater)
         setContentView(binding.root)
-
-        listOfSpecializationsCheckBoxes.add(binding.checkBox)
-        listOfSpecializationsCheckBoxes.add(binding.checkBox2)
-        listOfSpecializationsCheckBoxes.add(binding.checkBox3)
-        listOfSpecializationsCheckBoxes.add(binding.checkBox4)
-        listOfSpecializationsCheckBoxes.add(binding.checkBox5)
 
         binding.AvatarImageView.setOnClickListener {
             checkPermission(
@@ -109,63 +103,34 @@ class AdminAddDoctorActivity : AppCompatActivity() {
             )
         }
 
-
-        intent?.let {
-            it.extras?.let { extras ->
-                val doctorId = extras.getString("doctor")
-                doctorId?.let {
-                    Doctor.getById(
-                        doctorId,
-                        onSuccess = { result ->
-                            binding.AddDoctorButton.visibility = View.GONE
-                            binding.EditDoctorButton.visibility = View.VISIBLE
-                            doctor = result
-                            doctor.photoUrl?.let { url ->
-                                if (url == "null") {
-                                    binding.AvatarImageView.setImageResource(R.drawable.photo_default)
-                                } else
-                                    Picasso.get().load(it).into(binding.AvatarImageView)
-                            } ?: binding.AvatarImageView.setImageResource(R.drawable.photo_default)
-                            binding.NameDoctorEditText.setText(doctor.firstName)
-                            binding.SurNameDoctorEditText.setText(doctor.lastName)
-                            binding.RoomDoctorEditText.setText(doctor.roomNumber)
-                            binding.DBirthDoctorEditText.setText(
-                                SimpleDateFormat(Doctor.DATE_FORMAT_PATTERN).format(
-                                    doctor.dateOfBirth
-                                )
-                            )
-                            binding.DateStartWorkDoctorEditText.setText(
-                                SimpleDateFormat(Doctor.DATE_FORMAT_PATTERN).format(
-                                    doctor.dateStartWork
-                                )
-                            )
-                            listOfSpecializationsCheckBoxes.map { checkBox ->
-                                doctor.specializations.map { specialization ->
-                                    if (checkBox.text == specialization) {
-                                        checkBox.isChecked = true
-                                    }
-                                }
-                            }
-                        },
-                        onFailure = { exception ->
-                            Toast.makeText(this, exception, Toast.LENGTH_LONG).show()
-                        })
-                } ?: {
-                    binding.AddDoctorButton.visibility = View.VISIBLE
-                    binding.EditDoctorButton.visibility = View.GONE
-                }
-            } ?: {
-                binding.AddDoctorButton.visibility = View.VISIBLE
-                binding.EditDoctorButton.visibility = View.GONE
-            }
-        } ?: {
-            binding.AddDoctorButton.visibility = View.VISIBLE
-            binding.EditDoctorButton.visibility = View.GONE
+        firebaseAuth.currentUser?.uid?.let {
+            User.getUser(
+                authId = it,
+                onSuccess = { result ->
+                    user = result
+                    user.photoUrl?.let { url ->
+                        if (url == "null") {
+                            binding.AvatarImageView.setImageResource(R.drawable.photo_default)
+                        } else
+                            Picasso.get().load(url).into(binding.AvatarImageView)
+                    } ?: binding.AvatarImageView.setImageResource(R.drawable.photo_default)
+                    binding.NameEditText.setText(user.firstName)
+                    binding.SurNameEditText.setText(user.lastName)
+                    user.phoneNumber?.let { phone ->
+                        binding.PhoneNumberEditText.setText(phone)
+                    }
+                    binding.DBirthEditText.setText(
+                        SimpleDateFormat(Doctor.DATE_FORMAT_PATTERN).format(
+                            user.dateOfBirth
+                        )
+                    )
+                },
+                onFailure = { exception ->
+                    Toast.makeText(this, exception, Toast.LENGTH_LONG).show()
+                })
         }
-
-
-        binding.AddDoctorButton.setOnClickListener {
-            getDoctor()?.addToDataBase(
+        binding.EditButton.setOnClickListener {
+            getUser()?.edit(
                 onSuccess = {
                     finish()
                 },
@@ -174,27 +139,9 @@ class AdminAddDoctorActivity : AppCompatActivity() {
                 })
         }
 
-        binding.EditDoctorButton.setOnClickListener {
-            getDoctor(false)?.edit(
-                onSuccess = {
-                    finish()
-                },
-                onFailure = { exception ->
-                    Toast.makeText(this, exception, Toast.LENGTH_LONG).show()
-                })
+        binding.DBirthEditText.setOnClickListener {
+            openDatePicker(binding.DBirthEditText)
         }
-
-        binding.DBirthDoctorEditText.setOnClickListener {
-            openDatePicker(binding.DBirthDoctorEditText)
-        }
-        binding.DateStartWorkDoctorEditText.setOnClickListener {
-            openDatePicker(binding.DateStartWorkDoctorEditText)
-        }
-
-        binding.infoToolbar.setNavigationOnClickListener {
-            finish()
-        }
-
     }
 
     override fun onRequestPermissionsResult(
@@ -255,62 +202,6 @@ class AdminAddDoctorActivity : AppCompatActivity() {
         }
     }
 
-    private fun getDoctor(isCreate: Boolean? = true): Doctor? {
-        val dateOfBirth =
-            SimpleDateFormat(Doctor.DATE_FORMAT_PATTERN).parse(binding.DBirthDoctorEditText.text.toString())
-        val dateStartWork =
-            SimpleDateFormat(Doctor.DATE_FORMAT_PATTERN).parse(binding.DateStartWorkDoctorEditText.text.toString())
-        val specializations = ArrayList<String>()
-
-        listOfSpecializationsCheckBoxes.map {
-            if (it.isChecked)
-                specializations.add(it.text.toString())
-        }
-
-        val appointments = ArrayList<Appointment>()
-        val c = Calendar.getInstance()
-        for (i in 0..30) {
-            c.set(
-                c.get(Calendar.YEAR),
-                c.get(Calendar.MONTH),
-                c.get(Calendar.DAY_OF_MONTH),
-                8,
-                0,
-                0
-            )
-            if (c.get(Calendar.DAY_OF_WEEK) == Calendar.FRIDAY)
-                c.add(Calendar.DATE, 3)
-            else if (c.get(Calendar.DAY_OF_WEEK) == Calendar.SATURDAY)
-                c.add(Calendar.DATE, 2)
-            else
-                c.add(Calendar.DATE, 1)
-            for (j in 0..4) {
-                c.add(Calendar.HOUR, 1)
-                val date = c.time
-                appointments.add(Appointment(isAvailable = true, date = date))
-            }
-        }
-        dateOfBirth?.let { birthDate ->
-            dateStartWork?.let { startWorkDate ->
-                var id = UUID.randomUUID().toString()
-                if (isCreate == false && doctor != null)
-                    id = doctor.id
-                return Doctor(
-                    id = id,
-                    lastName = binding.SurNameDoctorEditText.text.toString(),
-                    firstName = binding.NameDoctorEditText.text.toString(),
-                    roomNumber = binding.RoomDoctorEditText.text.toString(),
-                    dateOfBirth = birthDate,
-                    dateStartWork = startWorkDate,
-                    rating = 5.0,
-                    specializations = specializations,
-                    appointments = appointments,
-                    photoUrl = doctor.photoUrl
-                )
-            } ?: return null
-        } ?: return null
-    }
-
 
     private fun openCropActivity(uri: Uri) {
         cropImageLauncher.launch(
@@ -343,4 +234,19 @@ class AdminAddDoctorActivity : AppCompatActivity() {
         }
     }
 
+    private fun getUser(): User? {
+        val dateOfBirth =
+            SimpleDateFormat(Doctor.DATE_FORMAT_PATTERN).parse(binding.DBirthEditText.text.toString())
+
+        dateOfBirth?.let { birthDate ->
+            return User(
+                authId = user.authId,
+                lastName = binding.SurNameEditText.text.toString(),
+                firstName = binding.NameEditText.text.toString(),
+                phoneNumber = binding.PhoneNumberEditText.text.toString(),
+                dateOfBirth = birthDate,
+                photoUrl = user.photoUrl
+            )
+        } ?: return null
+    }
 }

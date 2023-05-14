@@ -53,6 +53,7 @@ class AppointmentAdapter(private val context: Context) :
                         SimpleDateFormat(UserAppointment.DATE_FORMAT_PATTERN).format(item.date.time)
                     binding.appointmentTime.text =
                         SimpleDateFormat(UserAppointment.TIME_FORMAT_PATTERN).format(item.date.time)
+                    binding.cabinetInfo.text = it.roomNumber + " кабінет"
                     if (Date() < item.date && !item.isRated) {
                         binding.rateAppointmentButton.visibility = View.GONE
                         binding.cancelAppointmentButton.visibility = View.VISIBLE
