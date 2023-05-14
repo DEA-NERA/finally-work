@@ -1,7 +1,9 @@
 package com.example.finallywork.ui.admin
 
+import android.app.Activity
 import android.app.DatePickerDialog
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Bundle
@@ -9,16 +11,18 @@ import android.provider.MediaStore
 import android.view.View
 import android.widget.CheckBox
 import android.widget.EditText
-import android.widget.ImageView
 import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
+import androidx.lifecycle.lifecycleScope
 import com.canhub.cropper.CropImageContract
 import com.canhub.cropper.CropImageContractOptions
 import com.canhub.cropper.CropImageOptions
 import com.canhub.cropper.CropImageView
 import com.example.finallywork.R
 import com.example.finallywork.databinding.ActivityAdminAddDoctorBinding
-import com.example.finallywork.databinding.ActivityAdminPanelBinding
 import com.example.finallywork.models.Appointment
 import com.example.finallywork.models.Doctor
 import com.example.finallywork.models.User
@@ -27,7 +31,9 @@ import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.StorageReference
 import com.google.firebase.storage.ktx.storage
 import com.google.firebase.storage.ktx.storageMetadata
-import java.io.IOException
+import com.squareup.picasso.Picasso
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.tasks.await
 import java.text.SimpleDateFormat
 import java.time.LocalDate
 import java.time.ZoneId
@@ -40,25 +46,47 @@ class AdminAddDoctorActivity : AppCompatActivity() {
     private lateinit var binding: ActivityAdminAddDoctorBinding
     private val listOfSpecializationsCheckBoxes = ArrayList<CheckBox>()
     private lateinit var doctor: Doctor
-    private val REQUEST_IMAGE_GET = 1
+
+    companion object {
+        private const val STORAGE_PERMISSION_CODE = 101
+    }
 
     private val storageReference: StorageReference by lazy { Firebase.storage.reference }
     private val firebaseAuth: FirebaseAuth by lazy { FirebaseAuth.getInstance() }
+    private val changeProfileImageLauncher =
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+            if (result.resultCode == Activity.RESULT_OK) {
+                val data = result.data
+                data?.let {
+                    it.data?.let { uri -> openCropActivity(uri) }
+                }
+            }
+        }
     private val cropImageLauncher = registerForActivityResult(CropImageContract()) { result ->
         if (result.isSuccessful) {
             val uriContent = result.uriContent
-            uriContent?.let {
+            uriContent?.let { uri ->
                 val metadata = storageMetadata {
                     contentType = "image/jpg"
                 }
                 val reference =
-                    storageReference.child("files/userImage/" + firebaseAuth.currentUser?.uid)
-                reference.putFile(
-                    Uri.parse(result.uriContent.toString()), metadata
-                )
-                    .addOnFailureListener {
-                        Toast.makeText(this, it.localizedMessage, Toast.LENGTH_LONG).show()
-                    }
+                    storageReference.child("files/userImage/" + UUID.randomUUID().toString())
+                lifecycleScope.launch {
+                    doctor.photoUrl = reference.putFile(
+                        Uri.parse(uri.toString()), metadata
+                    ).await()
+                        .storage
+                        .downloadUrl
+                        .await()
+                        .toString()
+                    doctor.photoUrl?.let { url ->
+                        if (url == "null") {
+                            binding.AvatarImageView.setImageResource(R.drawable.photo_default)
+                        } else
+                            Picasso.get().load(url).into(binding.AvatarImageView)
+                    } ?: binding.AvatarImageView.setImageResource(R.drawable.photo_default)
+
+                }
             }
         } else {
             Toast.makeText(this, result.error?.localizedMessage, Toast.LENGTH_LONG).show()
@@ -77,11 +105,15 @@ class AdminAddDoctorActivity : AppCompatActivity() {
         listOfSpecializationsCheckBoxes.add(binding.checkBox3)
         listOfSpecializationsCheckBoxes.add(binding.checkBox4)
         listOfSpecializationsCheckBoxes.add(binding.checkBox5)
-        binding.AvatarImageView.setOnClickListener {
-            val intent = Intent(Intent.ACTION_PICK,MediaStore.Images.Media.INTERNAL_CONTENT_URI)
 
-            startActivityForResult(intent, REQUEST_IMAGE_GET)
+        binding.AvatarImageView.setOnClickListener {
+            checkPermission(
+                android.Manifest.permission.READ_EXTERNAL_STORAGE,
+                STORAGE_PERMISSION_CODE
+            )
         }
+
+
         intent?.let {
             it.extras?.let { extras ->
                 val doctorId = extras.getString("doctor")
@@ -92,6 +124,12 @@ class AdminAddDoctorActivity : AppCompatActivity() {
                             binding.AddDoctorButton.visibility = View.GONE
                             binding.EditDoctorButton.visibility = View.VISIBLE
                             doctor = result
+                            doctor.photoUrl?.let { url ->
+                                if (url == "null") {
+                                    binding.AvatarImageView.setImageResource(R.drawable.photo_default)
+                                } else
+                                    Picasso.get().load(it).into(binding.AvatarImageView)
+                            } ?: binding.AvatarImageView.setImageResource(R.drawable.photo_default)
                             binding.NameDoctorEditText.setText(doctor.firstName)
                             binding.SurNameDoctorEditText.setText(doctor.lastName)
                             binding.RoomDoctorEditText.setText(doctor.roomNumber)
@@ -163,19 +201,24 @@ class AdminAddDoctorActivity : AppCompatActivity() {
 
     }
 
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-
-        if (requestCode == REQUEST_IMAGE_GET && resultCode == RESULT_OK && data != null) {
-            try {
-
-                val imageUri: Uri? = data.data
-                binding.AvatarImageView.setImageURI(imageUri)
-                if (imageUri != null) {
-                    openCropActivity(imageUri)
-                }
-            } catch (e: IOException) {
-                e.printStackTrace()
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        if (requestCode == STORAGE_PERMISSION_CODE) {
+            if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                val galleryIntent =
+                    Intent(Intent.ACTION_PICK, MediaStore.Images.Media.INTERNAL_CONTENT_URI)
+                changeProfileImageLauncher.launch(galleryIntent)
+            } else {
+                Toast.makeText(
+                    this,
+                    "Надайте доступ до сховища в налаштуваннях додатку",
+                    Toast.LENGTH_LONG
+                )
+                    .show()
             }
         }
     }
@@ -265,7 +308,8 @@ class AdminAddDoctorActivity : AppCompatActivity() {
                     dateStartWork = startWorkDate,
                     rating = 5.0,
                     specializations = specializations,
-                    appointments = appointments
+                    appointments = appointments,
+                    photoUrl = doctor.photoUrl
                 )
             } ?: return null
         } ?: return null
@@ -287,6 +331,20 @@ class AdminAddDoctorActivity : AppCompatActivity() {
                 )
             )
         )
+    }
+
+    private fun checkPermission(permission: String, requestCode: Int) {
+        if (ContextCompat.checkSelfPermission(
+                this,
+                permission
+            ) == PackageManager.PERMISSION_DENIED
+        ) {
+            ActivityCompat.requestPermissions(this, arrayOf(permission), requestCode)
+        } else {
+            val galleryIntent =
+                Intent(Intent.ACTION_PICK, MediaStore.Images.Media.INTERNAL_CONTENT_URI)
+            changeProfileImageLauncher.launch(galleryIntent)
+        }
     }
 
 }

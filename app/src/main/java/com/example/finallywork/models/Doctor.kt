@@ -18,7 +18,8 @@ class Doctor(
     val dateStartWork: Date,
     val rating: Double,
     val specializations: ArrayList<String>,
-    val appointments: ArrayList<Appointment>
+    val appointments: ArrayList<Appointment>,
+    var photoUrl: String? = null
 ) {
     companion object {
         val firebaseFirestore: FirebaseFirestore by lazy { Firebase.firestore }
@@ -35,6 +36,7 @@ class Doctor(
         const val specializations = "specializations"
         const val rating = "rating"
         const val appointments = "appointments"
+        const val photoUrl = "photoUrl"
 
         fun getAll(
             onSuccess: (ArrayList<Doctor>) -> Unit,
@@ -60,7 +62,8 @@ class Doctor(
                                     dateStartWork = dateStart,
                                     specializations = it.get(specializations) as ArrayList<String>,
                                     rating = it.getDouble(rating) ?: 5.0,
-                                    appointments = it.get(appointments) as ArrayList<Appointment>
+                                    appointments = it.get(appointments) as ArrayList<Appointment>,
+                                    photoUrl = it.getString(photoUrl).toString()
                                 )
                                 result.add(doctor)
                             }
@@ -110,7 +113,8 @@ class Doctor(
                                     dateStartWork = dateStart,
                                     specializations = it.get(specializations) as ArrayList<String>,
                                     rating = it.getDouble(rating) ?: 5.0,
-                                    appointments = resultAppointments
+                                    appointments = resultAppointments,
+                                    photoUrl = it.getString(photoUrl).toString()
                                 )
                                 onSuccess.invoke(doctor)
                             }
@@ -153,7 +157,8 @@ class Doctor(
                                     dateStartWork = dateStart,
                                     specializations = it.get(specializations) as ArrayList<String>,
                                     rating = it.getDouble(rating) ?: 5.0,
-                                    appointments = it.get(appointments) as ArrayList<Appointment>
+                                    appointments = it.get(appointments) as ArrayList<Appointment>,
+                                    photoUrl = it.getString(photoUrl).toString()
                                 )
                                 result.add(doctor)
                             }
@@ -188,7 +193,8 @@ class Doctor(
             Doctor.dateStartWork to dateStartWork,
             Doctor.rating to rating,
             Doctor.specializations to specializations,
-            Doctor.appointments to appointment
+            Doctor.appointments to appointment,
+            Doctor.photoUrl to photoUrl
         )
         firebaseFirestore.collection(collection)
             .add(doctor)
@@ -239,26 +245,29 @@ class Doctor(
             .get()
             .addOnSuccessListener { task ->
                 task.documents.map { document ->
-                    firebaseFirestore.collection(collection)
-                        .document(
-                            document.id
-                        ).update(
-                            hashMapOf<String, Any>(
-                                Doctor.lastName to lastName,
-                                Doctor.firstName to firstName,
-                                Doctor.roomNumber to roomNumber,
-                                Doctor.dateOfBirth to dateOfBirth,
-                                Doctor.dateStartWork to dateStartWork,
-                                Doctor.specializations to specializations,
-                                Doctor.appointments to appointment
+                    photoUrl?.let { url ->
+                        firebaseFirestore.collection(collection)
+                            .document(
+                                document.id
+                            ).update(
+                                hashMapOf<String, Any>(
+                                    Doctor.lastName to lastName,
+                                    Doctor.firstName to firstName,
+                                    Doctor.roomNumber to roomNumber,
+                                    Doctor.dateOfBirth to dateOfBirth,
+                                    Doctor.dateStartWork to dateStartWork,
+                                    Doctor.specializations to specializations,
+                                    Doctor.appointments to appointment,
+                                    Doctor.photoUrl to url
+                                )
                             )
-                        )
-                        .addOnSuccessListener {
-                            onSuccess.invoke()
-                        }
-                        .addOnFailureListener { exception ->
-                            exception.localizedMessage?.let { onFailure.invoke(it) }
-                        }
+                            .addOnSuccessListener {
+                                onSuccess.invoke()
+                            }
+                            .addOnFailureListener { exception ->
+                                exception.localizedMessage?.let { onFailure.invoke(it) }
+                            }
+                    }
                 }
             }
             .addOnFailureListener { exception ->

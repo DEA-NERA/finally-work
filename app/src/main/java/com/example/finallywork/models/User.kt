@@ -12,7 +12,7 @@ data class User(
     val firstName: String,
     val dateOfBirth: Date,
     val role: Role? = Role.USER,
-//    private val city: City
+    val photoUrl: String
 ) {
     companion object {
         val firebaseFirestore: FirebaseFirestore by lazy { Firebase.firestore }
@@ -25,32 +25,34 @@ data class User(
         const val firstName = "firstName"
         const val dateOfBirth = "dateOfBirth"
         const val role = "role"
+        const val photoUrl = "photoUrl"
 
         fun getUser(authId: String, onSuccess: (User) -> Unit, onFailure: (String) -> Unit) {
             firebaseFirestore.collection(collection)
                 .whereEqualTo(User.authId, authId)
                 .get()
                 .addOnSuccessListener { documents ->
-                        documents.map {
-                            val dateOfBirth = it.getDate(
-                                dateOfBirth
+                    documents.map {
+                        val dateOfBirth = it.getDate(
+                            dateOfBirth
+                        )
+                        dateOfBirth?.let { date ->
+                            val user = User(
+                                authId,
+                                lastName = it.getString(lastName).toString(),
+                                firstName = it.getString(
+                                    firstName
+                                ).toString(),
+                                dateOfBirth = date,
+                                role = Role.valueOf(
+                                    it.getString(
+                                        role
+                                    ).toString()
+                                ),
+                                photoUrl = it.getString(photoUrl).toString()
                             )
-                            dateOfBirth?.let { date ->
-                                val user = User(
-                                    authId,
-                                    lastName = it.getString(lastName).toString(),
-                                    firstName = it.getString(
-                                        firstName
-                                    ).toString(),
-                                    dateOfBirth = date,
-                                    role = Role.valueOf(
-                                        it.getString(
-                                            role
-                                        ).toString()
-                                    )
-                                )
-                                onSuccess.invoke(user)
-                            }
+                            onSuccess.invoke(user)
+                        }
                     }
                 }
                 .addOnFailureListener { exception ->
@@ -100,7 +102,8 @@ data class User(
             User.lastName to lastName,
             User.firstName to firstName,
             User.dateOfBirth to dateOfBirth,
-            User.role to role
+            User.role to role,
+            User.photoUrl to photoUrl
         )
         firebaseFirestore.collection(collection)
             .add(user)

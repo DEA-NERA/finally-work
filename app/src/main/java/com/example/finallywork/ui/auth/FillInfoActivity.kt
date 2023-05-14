@@ -44,7 +44,8 @@ class FillInfoActivity : AppCompatActivity() {
                         authId = it.uid,
                         lastName = binding.SurnameEditText.text.toString(),
                         firstName = binding.NameEditText.text.toString(),
-                        dateOfBirth = dateOfBirth
+                        dateOfBirth = dateOfBirth,
+                        photoUrl = "null"
                     )
 
                     user.addToDataBase(

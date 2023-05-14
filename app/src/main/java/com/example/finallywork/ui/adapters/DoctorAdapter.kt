@@ -9,6 +9,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.finallywork.R
 import com.example.finallywork.databinding.ItemDoctorBinding
 import com.example.finallywork.models.Doctor
+import com.squareup.picasso.Picasso
 import java.time.LocalDate
 import java.time.Period
 import java.time.ZoneId
@@ -51,6 +52,12 @@ class DoctorAdapter(private val context: Context, private val isAdmin: Boolean? 
             item: Doctor
         ) {
             makeDetailsUnVisible()
+            item.photoUrl?.let {
+                if (it == "null") {
+                    binding.Avatar.setImageResource(R.drawable.photo_default)
+                } else
+                    Picasso.get().load(it).into(binding.Avatar)
+            } ?: binding.Avatar.setImageResource(R.drawable.photo_default)
             binding.NameDoctor.text = item.lastName + " " + item.firstName
             binding.RatingDoctor.text = item.rating.toString()
             val age = Period.between(
