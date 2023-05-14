@@ -45,6 +45,7 @@ class AdminAddDoctorActivity : AppCompatActivity() {
     private lateinit var binding: ActivityAdminAddDoctorBinding
     private val listOfSpecializationsCheckBoxes = ArrayList<CheckBox>()
     private var doctor: Doctor? = null
+    private var photoUrl: String? = null
 
     companion object {
         private const val STORAGE_PERMISSION_CODE = 101
@@ -70,14 +71,14 @@ class AdminAddDoctorActivity : AppCompatActivity() {
                 val reference =
                     storageReference.child("files/userImage/" + UUID.randomUUID().toString())
                 lifecycleScope.launch {
-                    doctor?.photoUrl = reference.putFile(
+                    photoUrl = reference.putFile(
                         Uri.parse(uri.toString()), metadata
                     ).await()
                         .storage
                         .downloadUrl
                         .await()
                         .toString()
-                    doctor?.photoUrl?.let { url ->
+                    photoUrl?.let { url ->
                         if (url == "null") {
                             binding.AvatarImageView.setImageResource(R.drawable.photo_default)
                         } else
@@ -302,10 +303,6 @@ class AdminAddDoctorActivity : AppCompatActivity() {
                     if (isCreate == false)
                         id = it.id
                 }
-                var photo = "null"
-                doctor?.photoUrl?.let {
-                    photo = it
-                }
                 return Doctor(
                     id = id,
                     lastName = binding.SurNameDoctorEditText.text.toString(),
@@ -316,7 +313,7 @@ class AdminAddDoctorActivity : AppCompatActivity() {
                     rating = 5.0,
                     specializations = specializations,
                     appointments = appointments,
-                    photoUrl = photo
+                    photoUrl = photoUrl
                 )
             } ?: return null
         } ?: return null
