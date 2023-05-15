@@ -9,6 +9,7 @@ import com.example.finallywork.databinding.ItemTimeBinding
 import com.example.finallywork.models.Appointment
 import com.example.finallywork.models.Doctor
 import java.text.SimpleDateFormat
+import java.util.Date
 
 
 class TimeAdapter(private val context: Context) :
@@ -50,7 +51,7 @@ class TimeAdapter(private val context: Context) :
         ) {
             fillColors()
             itemView.setOnClickListener {
-                if (item.isAvailable) {
+                if (item.isAvailable && Date() < item.date) {
                     onItemClick?.invoke(item)
                     fillColors()
                     binding.root.setCardBackgroundColor(context.getColor(R.color.main_green))
@@ -63,7 +64,7 @@ class TimeAdapter(private val context: Context) :
         private fun fillColors() {
             for (i in 0 until views.size) {
                 list?.let { appointments ->
-                    if (!appointments[i].isAvailable) {
+                    if (!appointments[i].isAvailable || Date() > appointments[i].date) {
                         views[i].binding.root.setCardBackgroundColor(context.getColor(R.color.gray))
                     } else {
                         views[i].binding.root.setCardBackgroundColor(context.getColor(R.color.light_green))
