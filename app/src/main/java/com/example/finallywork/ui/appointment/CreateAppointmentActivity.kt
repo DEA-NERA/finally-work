@@ -9,6 +9,7 @@ import com.example.finallywork.models.UserAppointment
 import com.example.finallywork.ui.adapters.TimeAdapter
 import com.google.firebase.auth.FirebaseAuth
 import java.util.Calendar
+import java.util.Date
 import java.util.UUID
 
 class CreateAppointmentActivity : AppCompatActivity() {
@@ -29,6 +30,8 @@ class CreateAppointmentActivity : AppCompatActivity() {
                     doctorId,
                     onSuccess = { result ->
                         doctor = result
+                        timeAdapter.list =
+                            result.appointments.filter { it.date.month == Date().month && it.date.date == Date().date }
                     },
                     onFailure = { exception ->
                         Toast.makeText(this, exception, Toast.LENGTH_LONG).show()
@@ -38,6 +41,7 @@ class CreateAppointmentActivity : AppCompatActivity() {
         binding.toolbar.setNavigationOnClickListener {
             finish()
         }
+
         val calendar = Calendar.getInstance()
         binding.calendar.minDate = calendar.timeInMillis
         binding.calendar.firstDayOfWeek = Calendar.MONDAY
